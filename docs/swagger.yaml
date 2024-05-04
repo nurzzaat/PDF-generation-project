@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  models.Confirmer:
+    properties:
+      fullName:
+        type: string
+      specialist:
+        type: string
+    type: object
   models.ErrorDetail:
     properties:
       code:
@@ -16,6 +23,24 @@ definitions:
           $ref: '#/definitions/models.ErrorDetail'
         type: array
     type: object
+  models.Header:
+    properties:
+      specialityName:
+        type: string
+      subjectName:
+        type: string
+    type: object
+  models.Litrature:
+    properties:
+      additionalLiterature:
+        items:
+          type: string
+        type: array
+      mainLiterature:
+        items:
+          type: string
+        type: array
+    type: object
   models.LoginRequest:
     properties:
       email:
@@ -23,12 +48,36 @@ definitions:
       password:
         type: string
     type: object
+  models.Modules:
+    properties:
+      moduleName:
+        type: string
+      topic:
+        items:
+          $ref: '#/definitions/models.Topic'
+        type: array
+    type: object
   models.Password:
     properties:
       confirmPassword:
         type: string
       password:
         type: string
+    type: object
+  models.PrefaceInfo:
+    properties:
+      confirmedBy:
+        $ref: '#/definitions/models.Confirmer'
+      discussedBy1:
+        $ref: '#/definitions/models.Confirmer'
+      discussedBy2:
+        $ref: '#/definitions/models.Confirmer'
+      discussion1:
+        type: string
+      discussion2:
+        type: string
+      madeBy:
+        $ref: '#/definitions/models.Confirmer'
     type: object
   models.Properties:
     properties:
@@ -44,6 +93,55 @@ definitions:
       metadata:
         $ref: '#/definitions/models.Properties'
       result: {}
+    type: object
+  models.Syllabus:
+    properties:
+      literature:
+        $ref: '#/definitions/models.Litrature'
+      mainInfo:
+        $ref: '#/definitions/models.SyllabusInfo'
+      preface:
+        $ref: '#/definitions/models.PrefaceInfo'
+      syllabusID:
+        type: integer
+      topics:
+        items:
+          $ref: '#/definitions/models.Modules'
+        type: array
+    type: object
+  models.SyllabusInfo:
+    properties:
+      allHours:
+        type: integer
+      courseNumber:
+        type: integer
+      creditNumber:
+        type: integer
+      facultyName:
+        type: string
+      kafedraName:
+        type: string
+      lectureHours:
+        type: integer
+      practiceLessons:
+        type: integer
+      sro:
+        type: integer
+      subjectInfo:
+        $ref: '#/definitions/models.Header'
+    type: object
+  models.Topic:
+    properties:
+      LK:
+        type: integer
+      SPZ:
+        type: integer
+      SRO:
+        type: integer
+      literature:
+        type: string
+      topicName:
+        type: string
     type: object
   models.UserRequest:
     properties:
@@ -180,8 +278,39 @@ paths:
       summary: SignUp
       tags:
       - auth
-  /syllabus/generate:
+  /syllabus:
     get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Syllabus'
+            type: array
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.SyllabusInfo'
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
@@ -191,6 +320,134 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Syllabus'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.Syllabus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/generate:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/others:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: subject
+        in: query
+        name: subject
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Syllabus'
+            type: array
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
   /user/profile:
     get:
       consumes:

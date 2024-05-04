@@ -201,8 +201,269 @@ const docTemplate = `{
                 }
             }
         },
-        "/syllabus/generate": {
+        "/syllabus": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Syllabus"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "description": "syllabus",
+                        "name": "syllabus",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SyllabusInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/syllabus/generate": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/syllabus/others": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "subject",
+                        "name": "subject",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Syllabus"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/syllabus/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Syllabus"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "syllabus",
+                        "name": "syllabus",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Syllabus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -253,6 +514,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Confirmer": {
+            "type": "object",
+            "properties": {
+                "fullName": {
+                    "type": "string"
+                },
+                "specialist": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ErrorDetail": {
             "type": "object",
             "properties": {
@@ -278,6 +550,34 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Header": {
+            "type": "object",
+            "properties": {
+                "specialityName": {
+                    "type": "string"
+                },
+                "subjectName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Litrature": {
+            "type": "object",
+            "properties": {
+                "additionalLiterature": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "mainLiterature": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "models.LoginRequest": {
             "type": "object",
             "properties": {
@@ -289,6 +589,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Modules": {
+            "type": "object",
+            "properties": {
+                "moduleName": {
+                    "type": "string"
+                },
+                "topic": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Topic"
+                    }
+                }
+            }
+        },
         "models.Password": {
             "type": "object",
             "properties": {
@@ -297,6 +611,29 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "models.PrefaceInfo": {
+            "type": "object",
+            "properties": {
+                "confirmedBy": {
+                    "$ref": "#/definitions/models.Confirmer"
+                },
+                "discussedBy1": {
+                    "$ref": "#/definitions/models.Confirmer"
+                },
+                "discussedBy2": {
+                    "$ref": "#/definitions/models.Confirmer"
+                },
+                "discussion1": {
+                    "type": "string"
+                },
+                "discussion2": {
+                    "type": "string"
+                },
+                "madeBy": {
+                    "$ref": "#/definitions/models.Confirmer"
                 }
             }
         },
@@ -321,6 +658,81 @@ const docTemplate = `{
                     "$ref": "#/definitions/models.Properties"
                 },
                 "result": {}
+            }
+        },
+        "models.Syllabus": {
+            "type": "object",
+            "properties": {
+                "literature": {
+                    "$ref": "#/definitions/models.Litrature"
+                },
+                "mainInfo": {
+                    "$ref": "#/definitions/models.SyllabusInfo"
+                },
+                "preface": {
+                    "$ref": "#/definitions/models.PrefaceInfo"
+                },
+                "syllabusID": {
+                    "type": "integer"
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Modules"
+                    }
+                }
+            }
+        },
+        "models.SyllabusInfo": {
+            "type": "object",
+            "properties": {
+                "allHours": {
+                    "type": "integer"
+                },
+                "courseNumber": {
+                    "type": "integer"
+                },
+                "creditNumber": {
+                    "type": "integer"
+                },
+                "facultyName": {
+                    "type": "string"
+                },
+                "kafedraName": {
+                    "type": "string"
+                },
+                "lectureHours": {
+                    "type": "integer"
+                },
+                "practiceLessons": {
+                    "type": "integer"
+                },
+                "sro": {
+                    "type": "integer"
+                },
+                "subjectInfo": {
+                    "$ref": "#/definitions/models.Header"
+                }
+            }
+        },
+        "models.Topic": {
+            "type": "object",
+            "properties": {
+                "LK": {
+                    "type": "integer"
+                },
+                "SPZ": {
+                    "type": "integer"
+                },
+                "SRO": {
+                    "type": "integer"
+                },
+                "literature": {
+                    "type": "string"
+                },
+                "topicName": {
+                    "type": "string"
+                }
             }
         },
         "models.UserRequest": {

@@ -21,7 +21,7 @@ func (ur *UserRepository) CreateUser(c context.Context, user models.UserRequest)
 	var userID int
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	userQuery := `INSERT INTO users(
-		email, password, firstname , lastname, created_at)
+		email, password, firstname, lastname, createdat)
 		VALUES ($1, $2, $3, $4, $5) returning id;`
 	err := ur.db.QueryRow(c, userQuery, user.Email, user.Password, user.FirstName , user.LastName , currentTime).Scan(&userID)
 	if err != nil {
@@ -51,7 +51,7 @@ func (ur *UserRepository) DeleteUser(c context.Context, userID int) error {
 func (ur *UserRepository) GetUserByEmail(c context.Context, email string) (models.User, error) {
 	user := models.User{}
 
-	query := `SELECT id, email, password, firstname , lastname , created_at FROM users where email = $1`
+	query := `SELECT id, email, password, firstname , lastname , createdat FROM users where email = $1`
 	row := ur.db.QueryRow(c, query, email)
 	err := row.Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
 
@@ -64,7 +64,7 @@ func (ur *UserRepository) GetUserByEmail(c context.Context, email string) (model
 func (ur *UserRepository) GetUserByID(c context.Context, userID int) (models.User, error) {
 	user := models.User{}
 
-	query := `SELECT id, email, password, firstname , lastname , created_at FROM users where id = $1`
+	query := `SELECT id, email, password, firstname , lastname , createdat FROM users where id = $1`
 	row := ur.db.QueryRow(c, query, userID)
 	err := row.Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
 
@@ -78,7 +78,7 @@ func (ur *UserRepository) GetUserByID(c context.Context, userID int) (models.Use
 func (ur *UserRepository) GetProfile(c context.Context, userID int) (models.User, error) {
 	user := models.User{}
 
-	query := `SELECT id, email, firstname , lastname , created_at FROM users where id = $1`
+	query := `SELECT id, email, firstname , lastname , createdat FROM users where id = $1`
 	row := ur.db.QueryRow(c, query, userID)
 	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.CreatedAt)
 
