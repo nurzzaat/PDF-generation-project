@@ -46,6 +46,7 @@ func Setup(app pkg.Application, router *gin.Engine) {
 	userRouter := router.Group("/user")
 	{
 		userRouter.GET("/profile", userController.GetProfile)
+		userRouter.PUT("/profile", userController.UpdateProfile)
 		userRouter.POST("/reset-password", loginController.ResetPassword)
 	}
 
