@@ -169,7 +169,7 @@ definitions:
       password:
         type: string
     type: object
-host: localhost:1232
+host: 185.146.1.71
 info:
   contact: {}
   description: This is a sample server celler server.
