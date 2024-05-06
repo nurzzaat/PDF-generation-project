@@ -19,7 +19,7 @@ func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.Syll
 	var id int
 	query := `INSERT INTO syllabus(
 		userid, subject, faculty, kafedra, specialist, coursenumber, creditnumber, allhours, lecturehour, practicehour, sro)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) retuning id;`
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning id;`
 	err := sr.db.QueryRow(c, query, userID, syllabusInfo.SubjectInfo.SubjectName,
 		syllabusInfo.FacultyName, syllabusInfo.KafedraName, syllabusInfo.SubjectInfo.SpecialityName, syllabusInfo.CourseNumber,
 		syllabusInfo.CreditNumber, syllabusInfo.AllHours, syllabusInfo.LectureHours, syllabusInfo.PracticeLessons, syllabusInfo.SRO).Scan(&id)
