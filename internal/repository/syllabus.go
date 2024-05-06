@@ -180,8 +180,21 @@ func (sr *SyllabusRepository) Update(c context.Context, syllabus models.Syllabus
 }
 
 func (sr *SyllabusRepository) Delete(c context.Context, syllabusID int) error {
+	
+	deleteQuery := `delete from literature where syllabusid = $1`
+	_, err := sr.db.Exec(c, deleteQuery, syllabusID)
+	if err != nil {
+		return err
+	}
+
+	deleteQuery = `delete from modules where syllabusid = $1`
+	_, err = sr.db.Exec(c, deleteQuery, syllabusID)
+	if err != nil {
+		return err
+	}
+
 	query := `delete from syllabus where id = $1`
-	_, err := sr.db.Exec(c, query, syllabusID)
+	_, err = sr.db.Exec(c, query, syllabusID)
 	if err != nil {
 		return err
 	}
