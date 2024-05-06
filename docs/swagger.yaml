@@ -388,6 +388,26 @@ paths:
       - ApiKeyAuth: []
       tags:
       - Syllabus
+  /syllabus/generate:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/literature/{id}:
     put:
       consumes:
       - application/json
@@ -418,10 +438,22 @@ paths:
       - ApiKeyAuth: []
       tags:
       - Syllabus
-  /syllabus/generate:
-    post:
+  /syllabus/main/{id}:
+    put:
       consumes:
       - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.Syllabus'
       produces:
       - application/json
       responses:
@@ -455,6 +487,68 @@ paths:
             items:
               $ref: '#/definitions/models.Syllabus'
             type: array
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/preface/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.Syllabus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/topic/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.Syllabus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
         default:
           description: ""
           schema:

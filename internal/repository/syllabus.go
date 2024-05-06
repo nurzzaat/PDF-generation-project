@@ -29,7 +29,90 @@ func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.Syll
 	return id ,nil
 }
 
-func (sr *SyllabusRepository) Update(c context.Context, userID uint, syllabus models.Syllabus) error {
+func (sr *SyllabusRepository) UpdateMain(c context.Context, syllabus models.Syllabus) error {
+	query := `UPDATE syllabus
+	SET subject=$1, faculty=$2, kafedra=$3, specialist=$4, coursenumber=$5, creditnumber=$6, allhours=$7, 
+	lecturehour=$8, practicehour=$9, sro=$10 WHERE id = $11`
+	_, err := sr.db.Exec(c, query, syllabus.MainInfo.SubjectInfo.SubjectName, syllabus.MainInfo.FacultyName,
+		syllabus.MainInfo.KafedraName, syllabus.MainInfo.SubjectInfo.SpecialityName, syllabus.MainInfo.CourseNumber,
+		syllabus.MainInfo.CreditNumber, syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours,
+		syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO, syllabus.SyllabusID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sr *SyllabusRepository) UpdatePreface(c context.Context, syllabus models.Syllabus) error {
+	query := `UPDATE syllabus
+	SET madeby=$1, madebymajor=$2, discuss1=$3, discussby1=$4, discussby1major=$5, discuss2=$6, discussby2=$7, 
+	discussby2major=$8, confirmedby=$9, confirmedbymajor=$10 WHERE id = $11`
+	_, err := sr.db.Exec(c, query, syllabus.Preface.MadeBy.FullName, syllabus.Preface.MadeBy.Specialist,
+		syllabus.Preface.Discussion1, syllabus.Preface.Discussed1.FullName, syllabus.Preface.Discussed1.Specialist,
+		syllabus.Preface.Discussion2, syllabus.Preface.Discussed2.FullName, syllabus.Preface.Discussed2.Specialist,
+		syllabus.Preface.ConfirmedBy.FullName, syllabus.Preface.ConfirmedBy.Specialist, syllabus.SyllabusID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sr *SyllabusRepository) UpdateTopic(c context.Context, syllabus models.Syllabus) error {
+	deleteQuery := `delete from modules where syllabusid = $1`
+	_, err := sr.db.Exec(c, deleteQuery, syllabus.SyllabusID)
+	if err != nil {
+		return err
+	}
+	for key, module := range syllabus.Topics {
+		var moduleID int
+		moduleQuery := `INSERT INTO modules(
+			syllabusid, orderid, title)
+			VALUES ($1, $2, $3) returning id;`
+		err = sr.db.QueryRow(c, moduleQuery, syllabus.SyllabusID, key+1, module.ModuleName).Scan(&moduleID)
+		if err != nil {
+			return err
+		}
+		for _, topic := range module.Topics {
+			topicQuery := `INSERT INTO topic(
+				moduleid, title, lk, spz, sro, literature)
+				VALUES ($1, $2, $3, $4, $5, $6);`
+			_, err := sr.db.Exec(c, topicQuery, moduleID, topic.TopicName, topic.LK, topic.SPZ, topic.SRO, topic.Literature)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (sr *SyllabusRepository) UpdateLiterature(c context.Context, syllabus models.Syllabus) error {
+	deleteQuery := `delete from literature where syllabusid = $1`
+	_, err := sr.db.Exec(c, deleteQuery, syllabus.SyllabusID)
+	if err != nil {
+		return err
+	}
+	for _, main := range syllabus.Literature.MainLiterature {
+		literatureQuery := `INSERT INTO literature(
+			syllabusid, type, title)
+			VALUES ($1, $2, $3);`
+		_, err = sr.db.Exec(c, literatureQuery, syllabus.SyllabusID, "main", main)
+		if err != nil {
+			return err
+		}
+	}
+	for _, additional := range syllabus.Literature.AdditionalLiterature {
+		literatureQuery := `INSERT INTO literature(
+			syllabusid, type, title)
+			VALUES ($1, $2, $3);`
+		_, err = sr.db.Exec(c, literatureQuery, syllabus.SyllabusID, "additional", additional)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (sr *SyllabusRepository) Update(c context.Context, syllabus models.Syllabus) error {
 	query := `UPDATE syllabus
 	SET subject=$1, faculty=$2, kafedra=$3, specialist=$4, coursenumber=$5, creditnumber=$6, allhours=$7, 
 	lecturehour=$8, practicehour=$9, sro=$10, madeby=$11, madebymajor=$12, discuss1=$13, discussby1=$14, 
