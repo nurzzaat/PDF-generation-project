@@ -15,17 +15,18 @@ func NewSyllabusRepository(db *pgxpool.Pool) models.SyllabusRepository {
 	return &SyllabusRepository{db: db}
 }
 
-func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.SyllabusInfo, userID uint) error {
+func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.SyllabusInfo, userID uint) (int , error) {
+	var id int
 	query := `INSERT INTO syllabus(
 		userid, subject, faculty, kafedra, specialist, coursenumber, creditnumber, allhours, lecturehour, practicehour, sro)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`
-	_, err := sr.db.Exec(c, query, userID, syllabusInfo.SubjectInfo.SubjectName,
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) retuning id;`
+	err := sr.db.QueryRow(c, query, userID, syllabusInfo.SubjectInfo.SubjectName,
 		syllabusInfo.FacultyName, syllabusInfo.KafedraName, syllabusInfo.SubjectInfo.SpecialityName, syllabusInfo.CourseNumber,
-		syllabusInfo.CreditNumber, syllabusInfo.AllHours, syllabusInfo.LectureHours, syllabusInfo.PracticeLessons, syllabusInfo.SRO)
+		syllabusInfo.CreditNumber, syllabusInfo.AllHours, syllabusInfo.LectureHours, syllabusInfo.PracticeLessons, syllabusInfo.SRO).Scan(&id)
 	if err != nil {
-		return err
+		return id , err
 	}
-	return nil
+	return id ,nil
 }
 
 func (sr *SyllabusRepository) Update(c context.Context, userID uint, syllabus models.Syllabus) error {

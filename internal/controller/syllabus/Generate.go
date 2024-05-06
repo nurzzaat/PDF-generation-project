@@ -8,9 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jung-kurt/gofpdf"
 	"github.com/nurzzaat/ZharasDiplom/internal/models"
-	
+
 	"log"
+
 	"github.com/unidoc/unipdf/v3/common/license"
+	
+
 	//"github.com/unidoc/unipdf/v3/contentstream/draw"
 	"github.com/unidoc/unipdf/v3/creator"
 	"github.com/unidoc/unipdf/v3/model"
@@ -35,12 +38,15 @@ func init() {
 // @Failure	default	{object}	models.ErrorResponse
 // @Router		/syllabus/generate [post]
 func (sc *SyllabusController) Generate(context *gin.Context) {
-	font, err := model.NewStandard14Font("Helvetica")
+	//	@Param		id	path	int	true	"id"
+	
+	font, err := model.NewPdfFontFromTTFFile("times-new-roman-cyr.otf")
+	
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fontBold, err := model.NewStandard14Font("Helvetica-Bold")
+	
+	fontBold, err := model.NewPdfFontFromTTFFile("times-new-roman-cyr.otf")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,9 +64,9 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	//customizeTOC(c, font, fontBold)
 
 	// Generate basic usage chapter.
-	if err := basicUsage(c, font, fontBold); err != nil {
-		log.Fatal(err)
-	}
+	// if err := basicUsage(c, font, fontBold); err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	// Generate styling content chapter.
 	// if err := stylingContent(c, font, fontBold); err != nil {
@@ -77,11 +83,11 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 		log.Fatal(err)
 	}
 
-	context.JSON(200 , gin.H{"message":"Success"})
+	context.JSON(200, gin.H{"message": "Success"})
 }
 func basicUsage(c *creator.Creator, font, fontBold *model.PdfFont) error {
 	// Create chapter.
-	ch := c.NewChapter("Basic usage")
+	ch := c.NewChapter("ФА")
 	ch.SetMargins(0, 0, 50, 0)
 	ch.GetHeading().SetFont(font)
 	ch.GetHeading().SetFontSize(18)
@@ -99,7 +105,6 @@ func basicUsage(c *creator.Creator, font, fontBold *model.PdfFont) error {
 
 	return nil
 }
-
 
 func contentAlignH(c *creator.Creator, ch *creator.Chapter, font, fontBold *model.PdfFont) {
 	// Create subchapter.
@@ -246,21 +251,20 @@ func contentWrapping(c *creator.Creator, ch *creator.Chapter, font, fontBold *mo
 	sc.Add(table)
 }
 
-
 func drawFrontPage(c *creator.Creator, font, fontBold *model.PdfFont) {
 	c.CreateFrontPage(func(args creator.FrontpageFunctionArgs) {
 		p := c.NewStyledParagraph()
 		p.SetMargins(0, 0, 300, 0)
 		p.SetTextAlignment(creator.TextAlignmentCenter)
 
-		chunk := p.Append("UniPDF")
+		chunk := p.Append("РаботаHello")
 		chunk.Style.Font = font
 		chunk.Style.FontSize = 56
 		chunk.Style.Color = creator.ColorRGBFrom8bit(56, 68, 77)
 
 		chunk = p.Append("\n")
 
-		chunk = p.Append("Table features")
+		chunk = p.Append("Тудай")
 		chunk.Style.Font = fontBold
 		chunk.Style.FontSize = 40
 		chunk.Style.Color = creator.ColorRGBFrom8bit(45, 148, 215)
@@ -269,11 +273,10 @@ func drawFrontPage(c *creator.Creator, font, fontBold *model.PdfFont) {
 	})
 }
 
-
 func (sc *SyllabusController) CreateSyllabuss(c *gin.Context) {
 	//userID := c.GetUint("userID")
 
-	// @Security	ApiKeyAuth
+	//	@Security	ApiKeyAuth
 
 	// err := sc.SyllabusRepository.Create(c)
 	// if err != nil {
@@ -344,6 +347,7 @@ func addHeader(pdf *gofpdf.Fpdf) *gofpdf.Fpdf {
 	pdf.Ln(-1)
 	return pdf
 }
+
 // func SetSyllabusInfo(pdf *gofpdf.Fpdf, c *gin.Context) *gofpdf.Fpdf {
 // 	info := models.SyllabusInfo{}
 // 	info.FacultyName = `Технологический`
@@ -355,35 +359,35 @@ func addHeader(pdf *gofpdf.Fpdf) *gofpdf.Fpdf {
 // 	info.PracticeLessons = "15"
 // 	info.SRO = "105"
 
-// 	pdf.SetFont("timesnrcyrmt", "", 11)
-// 	pdf.Ln(20)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Факультет – `+info.FacultyName, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Кафедра – `+info.KafedraName, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Курс – `+info.CourseNumber, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Количество кредитов – `+info.CreditNumber, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Всего часов – `+info.AllHours, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Лекций – `+info.LectureHours, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `Семинарские (практические) занятия – `+info.PracticeLessons, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(5)
-// 	pdf.SetX(25)
-// 	pdf.CellFormat(200, 10, `СРО – `+info.SRO, "0", 0, "L", false, 0, "")
-// 	pdf.Ln(80)
-// 	pdf.CellFormat(200, 10, `Астана  2024`, "0", 0, "C", false, 0, "")
-// 	return pdf
-// }
+//		pdf.SetFont("timesnrcyrmt", "", 11)
+//		pdf.Ln(20)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Факультет – `+info.FacultyName, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Кафедра – `+info.KafedraName, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Курс – `+info.CourseNumber, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Количество кредитов – `+info.CreditNumber, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Всего часов – `+info.AllHours, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Лекций – `+info.LectureHours, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `Семинарские (практические) занятия – `+info.PracticeLessons, "0", 0, "L", false, 0, "")
+//		pdf.Ln(5)
+//		pdf.SetX(25)
+//		pdf.CellFormat(200, 10, `СРО – `+info.SRO, "0", 0, "L", false, 0, "")
+//		pdf.Ln(80)
+//		pdf.CellFormat(200, 10, `Астана  2024`, "0", 0, "C", false, 0, "")
+//		return pdf
+//	}
 func SetPreface(pdf *gofpdf.Fpdf, c *gin.Context) *gofpdf.Fpdf {
 	info := models.PrefaceInfo{}
 	info.MadeBy.FullName = `Арман`

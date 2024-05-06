@@ -59,7 +59,7 @@ type Confirmer struct {
 }
 
 type SyllabusRepository interface {
-	Create(c context.Context, syllabusInfo SyllabusInfo, userID uint) error
+	Create(c context.Context, syllabusInfo SyllabusInfo, userID uint)(int , error)
 	Update(c context.Context, userID uint, syllabus Syllabus) error
 	Delete(c context.Context, syllabusID int) error
 	GetByID(c context.Context, syllabusID int, userID uint) (Syllabus, error)

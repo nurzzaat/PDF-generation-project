@@ -31,7 +31,7 @@ func (sc *SyllabusController) Create(c *gin.Context) {
 		return
 	}
 
-	err := sc.SyllabusRepository.Create(c, syllabus, userID)
+	id , err := sc.SyllabusRepository.Create(c, syllabus, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
@@ -46,5 +46,5 @@ func (sc *SyllabusController) Create(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, models.SuccessResponse{Result: "Success"})
+	c.JSON(200, models.SuccessResponse{Result: id})
 }

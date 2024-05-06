@@ -38,7 +38,7 @@ func Setup(app pkg.Application, router *gin.Engine) {
 	router.POST("/signup", loginController.Signup)
 	router.POST("/signin", loginController.Signin)
 	router.POST("/forgot-password", loginController.ForgotPassword)
-	//router.POST("/syllabus/generate" , syllabusController.CreateSyllabus)
+	router.POST("/syllabus/generate" , syllabusController.Generate)
 
 	router.Use(middleware.JWTAuth(env.AccessTokenSecret))
 	router.POST("/logout", loginController.Logout)
@@ -58,6 +58,6 @@ func Setup(app pkg.Application, router *gin.Engine) {
 		syllabusRouter.GET("/:id", syllabusController.GetByID)
 		syllabusRouter.GET("/", syllabusController.GetAllOwn)
 		syllabusRouter.GET("/others", syllabusController.GetAllOthers)
-		syllabusRouter.POST("/generate", syllabusController.Generate)
+		//syllabusRouter.POST("/generate/:id", syllabusController.Generate)
 	}
 }
