@@ -216,33 +216,6 @@ paths:
       summary: LogOut
       tags:
       - auth
-  /reset-password:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Change password
-        in: body
-        name: reset
-        required: true
-        schema:
-          $ref: '#/definitions/models.Password'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Reset password
-      tags:
-      - auth
   /signin:
     post:
       consumes:
@@ -601,6 +574,33 @@ paths:
       - ApiKeyAuth: []
       tags:
       - User
+  /user/reset-password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Change password
+        in: body
+        name: reset
+        required: true
+        schema:
+          $ref: '#/definitions/models.Password'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Reset password
+      tags:
+      - auth
 securityDefinitions:
   ApiKeyAuth:
     in: header
