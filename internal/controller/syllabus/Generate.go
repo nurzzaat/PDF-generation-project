@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -26,12 +25,12 @@ var (
 	pageCount = 5
 )
 
-func init() {
-	err := license.SetMeteredKey(os.Getenv("UNIDOC_LICENSE_KEY"))
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-}
+// func init() {
+// 	err := license.SetMeteredKey(os.Getenv(`UNIDOC_LICENSE_KEY`))
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 	}
+// }
 
 // @Tags		Syllabus
 // @Security	ApiKeyAuth
@@ -42,6 +41,11 @@ func init() {
 // @Failure	default	{object}	models.ErrorResponse
 // @Router		/syllabus/generate/{id} [post]
 func (sc *SyllabusController) Generate(context *gin.Context) {
+	err := license.SetMeteredKey(`49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929`)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	
 	userID := context.GetUint("userID")
 	id , _ := strconv.Atoi(context.Param("id"))
 
