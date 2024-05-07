@@ -70,10 +70,10 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	GradesTable(c, font, fontBold)
 	Literature(c, font, fontBold , syllabus)
 
-	if err := c.WriteToFile("unipdf-tables.pdf"); err != nil {
+	if err := c.WriteToFile(fmt.Sprintf("syllabus_%d.pdf" , id)); err != nil {
 		log.Fatal(err)
 	}
-	context.JSON(200, gin.H{"message": "Success"})
+	context.JSON(200, gin.H{"message": fmt.Sprintf("syllabus_%d.pdf" , id)})
 }
 
 func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.Syllabus) {
