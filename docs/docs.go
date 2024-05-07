@@ -233,7 +233,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/syllabus/generate": {
+        "/syllabus/generate/{id}": {
             "post": {
                 "security": [
                     {
@@ -248,6 +248,15 @@ const docTemplate = `{
                 ],
                 "tags": [
                     "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {

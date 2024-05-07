@@ -361,10 +361,16 @@ paths:
       - ApiKeyAuth: []
       tags:
       - Syllabus
-  /syllabus/generate:
+  /syllabus/generate/{id}:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
