@@ -33,6 +33,7 @@ func Setup(app pkg.Application, router *gin.Engine) {
 
 	syllabusController := &syllabus.SyllabusController{
 		SyllabusRepository: repository.NewSyllabusRepository(db),
+		Env : env,
 	}
 
 	router.POST("/signup", loginController.Signup)

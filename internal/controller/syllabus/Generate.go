@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/ZharasDiplom/pkg"
 
 	"github.com/unidoc/unipdf/v3/common/license"
 
@@ -17,6 +18,7 @@ import (
 
 type SyllabusController struct {
 	SyllabusRepository models.SyllabusRepository
+	Env *pkg.Env
 }
 
 var (
@@ -24,7 +26,7 @@ var (
 )
 
 func init() {
-	err := license.SetMeteredKey(`49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929`)
+	err := license.SetMeteredKey("49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
