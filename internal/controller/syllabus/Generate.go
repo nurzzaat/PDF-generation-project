@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +27,7 @@ var (
 )
 
 func init() {
-	err := license.SetMeteredKey("49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929")
+	err := license.SetMeteredKey(os.Getenv("UNIDOC_LICENSE_KEY"))
 	if err != nil {
 		fmt.Println(err.Error())
 	}

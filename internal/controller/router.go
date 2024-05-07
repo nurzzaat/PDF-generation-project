@@ -52,14 +52,14 @@ func Setup(app pkg.Application, router *gin.Engine) {
 
 	syllabusRouter := router.Group("/syllabus")
 	{
-		syllabusRouter.POST("/", syllabusController.Create)
+		syllabusRouter.POST("", syllabusController.Create)
 		syllabusRouter.PUT("/main/:id", syllabusController.UpdateMain)
 		syllabusRouter.PUT("/preface/:id", syllabusController.UpdatePreface)
 		syllabusRouter.PUT("/topic/:id", syllabusController.UpdateTopic)
 		syllabusRouter.PUT("/literature/:id", syllabusController.UpdateLiterature)
 		syllabusRouter.DELETE("/:id", syllabusController.Delete)
 		syllabusRouter.GET("/:id", syllabusController.GetByID)
-		syllabusRouter.GET("/", syllabusController.GetAllOwn)
+		syllabusRouter.GET("", syllabusController.GetAllOwn)
 		syllabusRouter.GET("/others", syllabusController.GetAllOthers)
 		syllabusRouter.POST("/generate/:id", syllabusController.Generate)
 	}
