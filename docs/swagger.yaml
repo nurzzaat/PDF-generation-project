@@ -1,4 +1,4 @@
-basePath: /
+basePath: /pdf
 definitions:
   models.Confirmer:
     properties:

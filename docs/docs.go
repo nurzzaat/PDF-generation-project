@@ -991,7 +991,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "185.146.1.71",
-	BasePath:         "/",
+	BasePath:         "/pdf",
 	Schemes:          []string{},
 	Title:            "Swagger Example API",
 	Description:      "This is a sample server celler server.",
