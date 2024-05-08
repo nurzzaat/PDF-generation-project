@@ -33,9 +33,9 @@ var (
 // }
 
 // @Tags		Syllabus
-// @Security	ApiKeyAuth
-//	@Param		id	path	int	true	"id"
 // @Accept		json
+// @Param		id	path	int	true	"id"
+// @Security	ApiKeyAuth
 // @Produce	json
 // @Success	200		{object}	models.SuccessResponse
 // @Failure	default	{object}	models.ErrorResponse
@@ -43,13 +43,13 @@ var (
 func (sc *SyllabusController) Generate(context *gin.Context) {
 	log.Println("Enter to function")
 
-	license.SetMeteredKey(`49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929`)
-	
+	license.SetMeteredKey(sc.Env.UnidocLisenseKey)
 	log.Println(license.GetMeteredState())
+	
 	userID := context.GetUint("userID")
 	id , _ := strconv.Atoi(context.Param("id"))
 
-	syllabus , err := sc.SyllabusRepository.GetByID(context , id , userID)
+	syllabus , err := sc.SyllabusRepository.GetByID(context , 1 , userID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
