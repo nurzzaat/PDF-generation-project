@@ -45,9 +45,7 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	log.Println("Enter to function")
 
 	license.SetMeteredKey(sc.Env.UnidocLisenseKey)
-	os.Setenv("UNIDOC_LICENSE_DIR", "/home/ubuntu/license")
-	fmt.Println(os.Getenv("UNIDOC_LICENSE_DIR"))
-
+	os.Setenv("HOME" , "/home/ubuntu/license")
 	log.Println(license.GetMeteredState())
 	
 	userID := context.GetUint("userID")
