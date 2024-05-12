@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -44,6 +45,10 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	log.Println("Enter to function")
 
 	license.SetMeteredKey(sc.Env.UnidocLisenseKey)
+	fmt.Println(os.Getenv("UNIDOC_LICENSE_DIR"))
+	fmt.Println(os.Getenv("HOME"))
+	fmt.Println(os.Getenv("GOPATH"))
+
 	log.Println(license.GetMeteredState())
 	
 	userID := context.GetUint("userID")

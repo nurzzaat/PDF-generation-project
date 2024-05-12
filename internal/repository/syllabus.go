@@ -15,7 +15,7 @@ func NewSyllabusRepository(db *pgxpool.Pool) models.SyllabusRepository {
 	return &SyllabusRepository{db: db}
 }
 
-func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.SyllabusInfo, userID uint) (int , error) {
+func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.SyllabusInfo, userID uint) (int, error) {
 	var id int
 	query := `INSERT INTO syllabus(
 		userid, subject, faculty, kafedra, specialist, coursenumber, creditnumber, allhours, lecturehour, practicehour, sro)
@@ -24,9 +24,9 @@ func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.Syll
 		syllabusInfo.FacultyName, syllabusInfo.KafedraName, syllabusInfo.SubjectInfo.SpecialityName, syllabusInfo.CourseNumber,
 		syllabusInfo.CreditNumber, syllabusInfo.AllHours, syllabusInfo.LectureHours, syllabusInfo.PracticeLessons, syllabusInfo.SRO).Scan(&id)
 	if err != nil {
-		return id , err
+		return id, err
 	}
-	return id ,nil
+	return id, nil
 }
 
 func (sr *SyllabusRepository) UpdateMain(c context.Context, syllabus models.Syllabus) error {
@@ -180,7 +180,7 @@ func (sr *SyllabusRepository) Update(c context.Context, syllabus models.Syllabus
 }
 
 func (sr *SyllabusRepository) Delete(c context.Context, syllabusID int) error {
-	
+
 	deleteQuery := `delete from literature where syllabusid = $1`
 	_, err := sr.db.Exec(c, deleteQuery, syllabusID)
 	if err != nil {
@@ -216,7 +216,6 @@ func (sr *SyllabusRepository) GetByID(c context.Context, syllabusID int, userID 
 	if err != nil {
 		return syllabus, err
 	}
-
 	//third page
 	moduleQuery := `SELECT id, title FROM modules WHERE syllabusid = $1 order by orderid;`
 	rows, err := sr.db.Query(c, moduleQuery, syllabusID)
@@ -294,7 +293,7 @@ func (sr *SyllabusRepository) GetAllOthers(c context.Context, userID uint, subje
 	syllabuses := []models.Syllabus{}
 	subject = `%` + subject + `%`
 	query := `SELECT id, subject, faculty, kafedra, specialist, coursenumber, allhours FROM syllabus where userid <> $1 and subject ilike $2`
-	rows, err := sr.db.Query(c, query, userID , subject)
+	rows, err := sr.db.Query(c, query, userID, subject)
 	if err != nil {
 		return syllabuses, err
 	}
