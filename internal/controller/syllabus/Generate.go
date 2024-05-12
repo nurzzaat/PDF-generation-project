@@ -10,10 +10,10 @@ import (
 	"github.com/nurzzaat/ZharasDiplom/internal/models"
 	"github.com/nurzzaat/ZharasDiplom/pkg"
 
-	"github.com/unidoc/unipdf/common/license"
+	"github.com/unidoc/unipdf/v3/common/license"
 
-	"github.com/unidoc/unipdf/creator"
-	"github.com/unidoc/unipdf/model"
+	"github.com/unidoc/unipdf/v3/creator"
+	"github.com/unidoc/unipdf/v3/model"
 )
 
 type SyllabusController struct {
