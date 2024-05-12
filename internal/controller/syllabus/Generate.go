@@ -49,7 +49,7 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	userID := context.GetUint("userID")
 	id , _ := strconv.Atoi(context.Param("id"))
 
-	syllabus , err := sc.SyllabusRepository.GetByID(context , 1 , userID)
+	syllabus , err := sc.SyllabusRepository.GetByID(context , id , userID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
