@@ -65,8 +65,8 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 		return
 	}
 
-	font, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/timesnrcyrmt.ttf")
-	fontBold, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/TNR_Bold.ttf")
+	font, _ := model.NewCompositePdfFontFromTTFFile("./timesnrcyrmt.ttf")
+	fontBold, _ := model.NewCompositePdfFontFromTTFFile("./TNR_Bold.ttf")
 
 	c := creator.New()
 	c.SetPageMargins(50, 50, 50, 50)
