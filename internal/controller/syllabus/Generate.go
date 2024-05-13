@@ -46,7 +46,7 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	userID := context.GetUint("userID")
 	id, _ := strconv.Atoi(context.Param("id"))
 	
-	fmt.Println(id)
+	log.Println(id)
 
 	syllabus, err := sc.SyllabusRepository.GetByID(context, id, userID)
 	if err != nil {
@@ -64,7 +64,7 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 		return
 	}
 
-	fmt.Println(syllabus)
+	log.Println(syllabus)
 
 	font, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/timesnrcyrmt.ttf")
 	fontBold, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/TNR_Bold.ttf")
@@ -72,17 +72,18 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	c := creator.New()
 	c.SetPageMargins(50, 50, 50, 50)
 
-	fmt.Println(1)
+	log.Println(1)
 	FirstPage(c, font, fontBold, syllabus)
-	fmt.Println(2)
+	log.Println(2)
 	Preface(c, font, fontBold, syllabus)
-	fmt.Println(3)
+	log.Println(3)
 	Topic(c, font, fontBold, syllabus)
-	fmt.Println(4)
+	log.Println(4)
 	GradesTable(c, font, fontBold)
-	fmt.Println(5)
+	log.Println(5)
 	Literature(c, font, fontBold, syllabus)
-	fmt.Println(6)
+	log.Println(6)
+	log.Println(2)
 
 	if err := c.WriteToFile(fmt.Sprintf("syllabus_%d.pdf", id)); err != nil {
 		fmt.Println(err.Error())
