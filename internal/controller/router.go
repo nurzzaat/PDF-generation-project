@@ -20,8 +20,8 @@ func Setup(app pkg.Application, router *gin.Engine) {
 	db := app.Pql
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.Static("/PDF-generation-project", "./PDF-generation-project")
-	router.StaticFile("/PDF-generation-project", "./PDF-generation-project")
+	router.Static("/PDF-generation-project", "/home/ubuntu/PDF-generation-project")
+	router.StaticFile("/PDF-generation-project", "/home/ubuntu/PDF-generation-project")
 
 
 	loginController := &auth.AuthController{
