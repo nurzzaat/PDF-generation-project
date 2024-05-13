@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	models "github.com/nurzzaat/ZharasDiplom/internal/models"
+	models "github.com/nurzzaat/PDF-generation-project/internal/models"
 
 	"errors"
 	"strings"
@@ -16,7 +16,7 @@ import (
 func CreateAccessToken(user *models.User, secret string, expiry int) (accessToken string, err error) {
 	//exp := time.Now().Add(time.Hour * time.Duration(expiry))
 	claims := &models.JwtClaims{
-		ID:     user.ID,
+		ID: user.ID,
 		// RegisteredClaims: jwt.RegisteredClaims{
 		// 	ExpiresAt: jwt.NewNumericDate(exp),
 		// },

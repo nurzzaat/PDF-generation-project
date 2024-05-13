@@ -5,11 +5,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
 )
 
 //	@Tags		Syllabus
+//
 // @Security	ApiKeyAuth
+//
 //	@Accept		json
 //	@Param		id	path	int	true	"id"
 //	@Produce	json
@@ -19,8 +21,8 @@ import (
 func (sc *SyllabusController) GetByID(c *gin.Context) {
 	userID := c.GetUint("userID")
 
-	syllabusID , _ := strconv.Atoi(c.Param("id"))
-	syllabus , err := sc.SyllabusRepository.GetByID(c , syllabusID , userID)
+	syllabusID, _ := strconv.Atoi(c.Param("id"))
+	syllabus, err := sc.SyllabusRepository.GetByID(c, syllabusID, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
@@ -35,5 +37,5 @@ func (sc *SyllabusController) GetByID(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200 , syllabus)
+	c.JSON(200, syllabus)
 }

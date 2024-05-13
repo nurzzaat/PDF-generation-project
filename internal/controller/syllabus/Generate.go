@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
-	"github.com/nurzzaat/ZharasDiplom/pkg"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/pkg"
 
 	"github.com/unidoc/unipdf/v3/common/license"
 
@@ -19,7 +18,7 @@ import (
 
 type SyllabusController struct {
 	SyllabusRepository models.SyllabusRepository
-	Env *pkg.Env
+	Env                *pkg.Env
 }
 
 var (
@@ -45,13 +44,12 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	log.Println("Enter to function")
 
 	license.SetMeteredKey(sc.Env.UnidocLisenseKey)
-	os.Setenv("HOME" , "/home/ubuntu/license")
 	log.Println(license.GetMeteredState())
-	
-	userID := context.GetUint("userID")
-	id , _ := strconv.Atoi(context.Param("id"))
 
-	syllabus , err := sc.SyllabusRepository.GetByID(context , id , userID)
+	userID := context.GetUint("userID")
+	id, _ := strconv.Atoi(context.Param("id"))
+
+	syllabus, err := sc.SyllabusRepository.GetByID(context, id, userID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
@@ -73,19 +71,19 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	c := creator.New()
 	c.SetPageMargins(50, 50, 50, 50)
 
-	FirstPage(c, font, fontBold , syllabus)
-	Preface(c, font, fontBold , syllabus)
-	Topic(c, font, fontBold , syllabus)
+	FirstPage(c, font, fontBold, syllabus)
+	Preface(c, font, fontBold, syllabus)
+	Topic(c, font, fontBold, syllabus)
 	GradesTable(c, font, fontBold)
-	Literature(c, font, fontBold , syllabus)
+	Literature(c, font, fontBold, syllabus)
 
-	if err := c.WriteToFile(fmt.Sprintf("syllabus_%d.pdf" , id)); err != nil {
+	if err := c.WriteToFile(fmt.Sprintf("syllabus_%d.pdf", id)); err != nil {
 		fmt.Println(err.Error())
 	}
-	context.JSON(200, gin.H{"message": fmt.Sprintf("syllabus_%d.pdf" , id)})
+	context.JSON(200, gin.H{"message": fmt.Sprintf("syllabus_%d.pdf", id)})
 }
 
-func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.Syllabus) {
+func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	table := c.NewTable(2)
 
 	cell := table.NewCell()
@@ -143,8 +141,8 @@ func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont , syllabus mode
 	Всего часов – %v
 	Лекций – %v
 	Семинарские (практические) занятия – %v
-	СРО – %v`, syllabus.MainInfo.FacultyName, syllabus.MainInfo.KafedraName, syllabus.MainInfo.CourseNumber, syllabus.MainInfo.CreditNumber, 
-	syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours, syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO))
+	СРО – %v`, syllabus.MainInfo.FacultyName, syllabus.MainInfo.KafedraName, syllabus.MainInfo.CourseNumber, syllabus.MainInfo.CreditNumber,
+		syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours, syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO))
 	p.SetFontSize(12)
 	p.SetLineHeight(1.5)
 	p.SetFont(font)
@@ -162,7 +160,7 @@ func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont , syllabus mode
 	c.Draw(p)
 }
 
-func Preface(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.Syllabus) {
+func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	c.NewPage()
 	headTable(c, font, fontBold, 2)
 	chapterCenter := c.NewStyledParagraph()
@@ -202,7 +200,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 30, 0)
-	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.Discussed1.Specialist,syllabus.Preface.Discussed1.FullName))
+	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.Discussed1.Specialist, syllabus.Preface.Discussed1.FullName))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter.Add(p)
@@ -215,7 +213,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 30, 0)
-	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.Discussed2.Specialist,syllabus.Preface.Discussed2.FullName))
+	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.Discussed2.Specialist, syllabus.Preface.Discussed2.FullName))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter2.Add(p)
@@ -229,7 +227,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 15)
-	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.ConfirmedBy.Specialist,syllabus.Preface.ConfirmedBy.FullName))
+	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.ConfirmedBy.Specialist, syllabus.Preface.ConfirmedBy.FullName))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	chapter3.Add(p)
@@ -240,7 +238,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models
 	c.Draw(chapter1)
 }
 
-func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.Syllabus) {
+func Topic(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	c.NewPage()
 
 	headTable(c, font, fontBold, 3)
@@ -330,18 +328,18 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.S
 	lk := 0
 	spz := 0
 	sro := 0
-	for key , module := range syllabus.Topics {
+	for key, module := range syllabus.Topics {
 		cell = table.MultiColCell(25)
-		p = c.NewParagraph(fmt.Sprintf("Модуль %d. %s", key + 1 , module.ModuleName))
+		p = c.NewParagraph(fmt.Sprintf("Модуль %d. %s", key+1, module.ModuleName))
 		p.SetMargins(0, 0, 0, 7)
 		p.SetFont(font)
 		p.SetFontSize(12)
 		p.SetTextAlignment(creator.TextAlignmentCenter)
 		cell.SetContent(p)
 		cell.SetBorder(creator.CellBorderSideAll, creator.CellBorderStyleSingle, 1)
-		for key , topic := range module.Topics {
+		for key, topic := range module.Topics {
 			cell = table.MultiColCell(1)
-			p = c.NewParagraph(fmt.Sprintf("%d", key + 1))
+			p = c.NewParagraph(fmt.Sprintf("%d", key+1))
 			p.SetMargins(0, 0, 0, 7)
 			p.SetFont(font)
 			p.SetFontSize(12)
@@ -349,7 +347,7 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.S
 			cell.SetBorder(creator.CellBorderSideAll, creator.CellBorderStyleSingle, 1)
 
 			cell = table.MultiColCell(14)
-			p = c.NewParagraph(fmt.Sprintf("Тема %d. %s" , key + 1 , topic.TopicName))
+			p = c.NewParagraph(fmt.Sprintf("Тема %d. %s", key+1, topic.TopicName))
 			p.SetMargins(0, 0, 0, 7)
 			p.SetFont(font)
 			p.SetFontSize(12)
@@ -357,7 +355,7 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.S
 			cell.SetBorder(creator.CellBorderSideAll, creator.CellBorderStyleSingle, 1)
 
 			cell = table.MultiColCell(2)
-			p = c.NewParagraph(fmt.Sprintf("%v" , topic.LK))
+			p = c.NewParagraph(fmt.Sprintf("%v", topic.LK))
 			p.SetFont(font)
 			p.SetTextAlignment(creator.TextAlignmentCenter)
 			p.SetFontSize(12)
@@ -367,7 +365,7 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.S
 			lk += topic.LK
 
 			cell = table.MultiColCell(2)
-			p = c.NewParagraph(fmt.Sprintf("%v" , topic.SPZ))
+			p = c.NewParagraph(fmt.Sprintf("%v", topic.SPZ))
 			p.SetTextAlignment(creator.TextAlignmentCenter)
 			p.SetFont(font)
 			p.SetFontSize(12)
@@ -377,7 +375,7 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.S
 			spz += topic.SPZ
 
 			cell = table.MultiColCell(2)
-			p = c.NewParagraph(fmt.Sprintf("%v" , topic.SRO))
+			p = c.NewParagraph(fmt.Sprintf("%v", topic.SRO))
 			p.SetTextAlignment(creator.TextAlignmentCenter)
 			p.SetFont(font)
 			p.SetFontSize(12)
@@ -387,7 +385,7 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.S
 			sro += topic.SRO
 
 			cell = table.MultiColCell(4)
-			p = c.NewParagraph(fmt.Sprintf("%v" , topic.Literature))
+			p = c.NewParagraph(fmt.Sprintf("%v", topic.Literature))
 			cell.SetContent(p)
 			p.SetTextAlignment(creator.TextAlignmentCenter)
 			p.SetFont(font)
@@ -712,7 +710,7 @@ func GradesTable(c *creator.Creator, font, fontBold *model.PdfFont) {
 	c.Draw(table)
 }
 
-func Literature(c *creator.Creator, font, fontBold *model.PdfFont , syllabus models.Syllabus) {
+func Literature(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	c.NewPage()
 
 	chapter := c.NewChapter("ЛИТЕРАТУРА И ИНТЕРНЕТ-РЕСУРСЫ")
@@ -727,11 +725,11 @@ func Literature(c *creator.Creator, font, fontBold *model.PdfFont , syllabus mod
 	heading.SetMargins(0, 0, 10, 10)
 	heading.SetFont(fontBold)
 
-	for key , literature := range syllabus.Literature.MainLiterature{
-		p := c.NewParagraph(fmt.Sprintf("4.1.%d. %s", key + 1, literature))
+	for key, literature := range syllabus.Literature.MainLiterature {
+		p := c.NewParagraph(fmt.Sprintf("4.1.%d. %s", key+1, literature))
 		p.SetFont(font)
 		p.SetFontSize(12)
-		p.SetMargins(0 ,0 ,0, 7)
+		p.SetMargins(0, 0, 0, 7)
 		subChapter.Add(p)
 	}
 
@@ -741,11 +739,11 @@ func Literature(c *creator.Creator, font, fontBold *model.PdfFont , syllabus mod
 	heading.SetMargins(0, 0, 10, 10)
 	heading.SetFont(fontBold)
 
-	for key , literature := range syllabus.Literature.AdditionalLiterature{
-		p := c.NewParagraph(fmt.Sprintf("4.2.%d. %s", key + 1, literature))
+	for key, literature := range syllabus.Literature.AdditionalLiterature {
+		p := c.NewParagraph(fmt.Sprintf("4.2.%d. %s", key+1, literature))
 		p.SetFont(font)
 		p.SetFontSize(12)
-		p.SetMargins(0 ,0 ,0, 7)
+		p.SetMargins(0, 0, 0, 7)
 		subChapter.Add(p)
 	}
 

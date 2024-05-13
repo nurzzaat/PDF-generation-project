@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
 )
 
 type UserRepository struct {
@@ -16,14 +16,13 @@ func NewUserRepository(db *pgxpool.Pool) models.UserRepository {
 	return &UserRepository{db: db}
 }
 
-
 func (ur *UserRepository) CreateUser(c context.Context, user models.UserRequest) (int, error) {
 	var userID int
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	userQuery := `INSERT INTO users(
 		email, password, firstname, lastname, createdat)
 		VALUES ($1, $2, $3, $4, $5) returning id;`
-	err := ur.db.QueryRow(c, userQuery, user.Email, user.Password, user.FirstName , user.LastName , currentTime).Scan(&userID)
+	err := ur.db.QueryRow(c, userQuery, user.Email, user.Password, user.FirstName, user.LastName, currentTime).Scan(&userID)
 	if err != nil {
 		return 0, err
 	}
@@ -32,7 +31,7 @@ func (ur *UserRepository) CreateUser(c context.Context, user models.UserRequest)
 
 func (ur *UserRepository) EditUser(c context.Context, user models.User) (int, error) {
 	userQuery := `UPDATE users SET email=$1, firstname=$2 , lastname=$3 WHERE id = $4`
-	_, err := ur.db.Exec(c, userQuery, user.Email, user.FirstName , user.LastName , user.ID)
+	_, err := ur.db.Exec(c, userQuery, user.Email, user.FirstName, user.LastName, user.ID)
 	if err != nil {
 		return 0, err
 	}
@@ -46,7 +45,6 @@ func (ur *UserRepository) DeleteUser(c context.Context, userID int) error {
 	}
 	return nil
 }
-
 
 func (ur *UserRepository) GetUserByEmail(c context.Context, email string) (models.User, error) {
 	user := models.User{}

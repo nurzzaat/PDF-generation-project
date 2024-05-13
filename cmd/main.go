@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/controller"
-	"github.com/nurzzaat/ZharasDiplom/pkg"
+	"github.com/nurzzaat/PDF-generation-project/internal/controller"
+	"github.com/nurzzaat/PDF-generation-project/pkg"
 )
 
 //	@title			Swagger Example API

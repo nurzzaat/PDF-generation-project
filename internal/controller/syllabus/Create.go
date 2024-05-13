@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
 )
 
 //	@Tags		Syllabus
+//
 // @Security	ApiKeyAuth
+//
 //	@Param		syllabus	body	models.SyllabusInfo	true	"syllabus"
 //	@Accept		json
 //	@Produce	json
@@ -31,7 +33,7 @@ func (sc *SyllabusController) Create(c *gin.Context) {
 		return
 	}
 
-	id , err := sc.SyllabusRepository.Create(c, syllabus, userID)
+	id, err := sc.SyllabusRepository.Create(c, syllabus, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{

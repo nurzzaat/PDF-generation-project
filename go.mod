@@ -1,4 +1,4 @@
-module github.com/nurzzaat/ZharasDiplom
+module github.com/nurzzaat/PDF-generation-project
 
 go 1.20
 
@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/jackc/pgx/v4 v4.18.3
+	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.18.2
 	github.com/swaggo/files v1.0.1

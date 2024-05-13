@@ -2,17 +2,17 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/middleware"
-	"github.com/nurzzaat/ZharasDiplom/pkg"
+	"github.com/nurzzaat/PDF-generation-project/middleware"
+	"github.com/nurzzaat/PDF-generation-project/pkg"
 
-	_ "github.com/nurzzaat/ZharasDiplom/docs"
+	_ "github.com/nurzzaat/PDF-generation-project/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"github.com/nurzzaat/ZharasDiplom/internal/controller/auth"
-	"github.com/nurzzaat/ZharasDiplom/internal/controller/syllabus"
-	"github.com/nurzzaat/ZharasDiplom/internal/controller/user"
-	"github.com/nurzzaat/ZharasDiplom/internal/repository"
+	"github.com/nurzzaat/PDF-generation-project/internal/controller/auth"
+	"github.com/nurzzaat/PDF-generation-project/internal/controller/syllabus"
+	"github.com/nurzzaat/PDF-generation-project/internal/controller/user"
+	"github.com/nurzzaat/PDF-generation-project/internal/repository"
 )
 
 func Setup(app pkg.Application, router *gin.Engine) {
@@ -33,7 +33,7 @@ func Setup(app pkg.Application, router *gin.Engine) {
 
 	syllabusController := &syllabus.SyllabusController{
 		SyllabusRepository: repository.NewSyllabusRepository(db),
-		Env : env,
+		Env:                env,
 	}
 
 	router.POST("/signup", loginController.Signup)

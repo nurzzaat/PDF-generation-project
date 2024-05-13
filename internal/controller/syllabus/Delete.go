@@ -5,11 +5,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
 )
 
 //	@Tags		Syllabus
+//
 // @Security	ApiKeyAuth
+//
 //	@Accept		json
 //	@Param		id	path	int	true	"id"
 //	@Produce	json
@@ -17,9 +19,9 @@ import (
 //	@Failure	default	{object}	models.ErrorResponse
 //	@Router		/syllabus/{id} [delete]
 func (sc *SyllabusController) Delete(c *gin.Context) {
-	syllabusID , _ := strconv.Atoi(c.Param("id"))
-	
-	err := sc.SyllabusRepository.Delete(c , syllabusID)
+	syllabusID, _ := strconv.Atoi(c.Param("id"))
+
+	err := sc.SyllabusRepository.Delete(c, syllabusID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{

@@ -5,11 +5,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
 )
 
 //	@Tags		Syllabus
+//
 // @Security	ApiKeyAuth
+//
 //	@Param		id			path	int				true	"id"
 //	@Param		syllabus	body	models.Syllabus	true	"syllabus"
 //	@Accept		json
@@ -30,8 +32,8 @@ func (sc *SyllabusController) UpdateLiterature(c *gin.Context) {
 		})
 		return
 	}
-	syllabus.SyllabusID , _ = strconv.Atoi(c.Param("id"))
-	err := sc.SyllabusRepository.UpdateLiterature(c,  syllabus)
+	syllabus.SyllabusID, _ = strconv.Atoi(c.Param("id"))
+	err := sc.SyllabusRepository.UpdateLiterature(c, syllabus)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{

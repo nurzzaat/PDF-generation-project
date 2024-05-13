@@ -4,23 +4,23 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nurzzaat/ZharasDiplom/internal/models"
+	"github.com/nurzzaat/PDF-generation-project/internal/models"
 )
 
-//	@Tags		User
-//	@Accept		json
-//	@Produce	json
-//	@Param		user	body	models.User	true	"user"
-//	@Security	ApiKeyAuth
-//	@Success	200		{object}	models.SuccessResponse
-//	@Failure	default	{object}	models.ErrorResponse
-//	@Router		/user/profile [put]
+// @Tags		User
+// @Accept		json
+// @Produce	json
+// @Param		user	body	models.User	true	"user"
+// @Security	ApiKeyAuth
+// @Success	200		{object}	models.SuccessResponse
+// @Failure	default	{object}	models.ErrorResponse
+// @Router		/user/profile [put]
 func (sc *UserController) UpdateProfile(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	var userInfo models.User
 	userInfo.ID = userID
-	if err := c.ShouldBind(&userInfo); err != nil{
+	if err := c.ShouldBind(&userInfo); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
 				{
