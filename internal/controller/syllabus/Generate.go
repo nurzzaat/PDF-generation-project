@@ -25,12 +25,12 @@ var (
 	pageCount = 5
 )
 
-// func init() {
-// 	err := license.SetMeteredKey(os.Getenv(`UNIDOC_LICENSE_KEY`))
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 	}
-// }
+func init() {
+	err := 	license.SetMeteredKey(`49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929`)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
 
 // @Tags		Syllabus
 // @Accept		json
@@ -43,11 +43,10 @@ var (
 func (sc *SyllabusController) Generate(context *gin.Context) {
 	log.Println("Enter to function")
 
-	license.SetMeteredKey(sc.Env.UnidocLisenseKey)
-	log.Println(license.GetMeteredState())
-
 	userID := context.GetUint("userID")
 	id, _ := strconv.Atoi(context.Param("id"))
+	
+	fmt.Println(id)
 
 	syllabus, err := sc.SyllabusRepository.GetByID(context, id, userID)
 	if err != nil {
@@ -73,11 +72,17 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	c := creator.New()
 	c.SetPageMargins(50, 50, 50, 50)
 
+	fmt.Println(1)
 	FirstPage(c, font, fontBold, syllabus)
+	fmt.Println(2)
 	Preface(c, font, fontBold, syllabus)
+	fmt.Println(3)
 	Topic(c, font, fontBold, syllabus)
+	fmt.Println(4)
 	GradesTable(c, font, fontBold)
+	fmt.Println(5)
 	Literature(c, font, fontBold, syllabus)
+	fmt.Println(6)
 
 	if err := c.WriteToFile(fmt.Sprintf("syllabus_%d.pdf", id)); err != nil {
 		fmt.Println(err.Error())
