@@ -20,7 +20,9 @@ func Setup(app pkg.Application, router *gin.Engine) {
 	db := app.Pql
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	//router.Static("/images", "./images")
+	router.Static("/PDF-generation-project", "./PDF-generation-project")
+	router.StaticFile("/PDF-generation-project", "./PDF-generation-project")
+
 
 	loginController := &auth.AuthController{
 		UserRepository: repository.NewUserRepository(db),
