@@ -26,7 +26,7 @@ var (
 )
 
 func init() {
-	err := 	license.SetMeteredKey(`49976580bfcb30b60793dc96151a167a16bfc370f88dc092042bd1cd2fa25929`)
+	err := license.SetMeteredKey(`90308c219a04bac91fbc3ef50f27c988fbc8f4438cd10214e02cfb132113da0e`)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -45,7 +45,7 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 
 	userID := context.GetUint("userID")
 	id, _ := strconv.Atoi(context.Param("id"))
-	
+
 	log.Println(id)
 
 	syllabus, err := sc.SyllabusRepository.GetByID(context, id, userID)
@@ -66,8 +66,10 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 
 	log.Println(syllabus)
 
-	font, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/timesnrcyrmt.ttf")
-	fontBold, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/TNR_Bold.ttf")
+	// font, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/timesnrcyrmt.ttf")
+	// fontBold, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/TNR_Bold.ttf")
+	font, _ := model.NewCompositePdfFontFromTTFFile("timesnrcyrmt.ttf")
+	fontBold, _ := model.NewCompositePdfFontFromTTFFile("TNR_Bold.ttf")
 
 	c := creator.New()
 	c.SetPageMargins(50, 50, 50, 50)
@@ -77,6 +79,8 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 	log.Println(2)
 	Preface(c, font, fontBold, syllabus)
 	log.Println(3)
+	Text(c, font, fontBold, syllabus)
+	log.Println(7)
 	Topic(c, font, fontBold, syllabus)
 	log.Println(4)
 	GradesTable(c, font, fontBold)
@@ -149,8 +153,9 @@ func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont, syllabus model
 	Всего часов – %v
 	Лекций – %v
 	Семинарские (практические) занятия – %v
-	СРО – %v`, syllabus.MainInfo.FacultyName, syllabus.MainInfo.KafedraName, syllabus.MainInfo.CourseNumber, syllabus.MainInfo.CreditNumber,
-		syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours, syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO))
+	СРО – %v
+	СРОП – %v`, syllabus.MainInfo.FacultyName, syllabus.MainInfo.KafedraName, syllabus.MainInfo.CourseNumber, syllabus.MainInfo.CreditNumber,
+		syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours, syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO, syllabus.MainInfo.SROP))
 	p.SetFontSize(12)
 	p.SetLineHeight(1.5)
 	p.SetFont(font)
@@ -163,11 +168,10 @@ func FirstPage(c *creator.Creator, font, fontBold *model.PdfFont, syllabus model
 	p.SetFontSize(12)
 	p.SetFont(font)
 	p.SetTextAlignment(creator.TextAlignmentCenter)
-	p.SetMargins(0, 0, 200, 0)
+	p.SetMargins(0, 0, 180, 0)
 
 	c.Draw(p)
 }
-
 func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	c.NewPage()
 	headTable(c, font, fontBold, 2)
@@ -200,7 +204,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.
 	heading.SetFontSize(16)
 	heading.SetFont(fontBold)
 
-	subChapter := chapter2.NewSubchapter(syllabus.Preface.Discussion1)
+	subChapter := chapter2.NewSubchapter(`На заседании кафедры "Информационные системы" от ` + syllabus.Preface.Discussion1)
 	heading = subChapter.GetHeading()
 	heading.SetFontSize(12)
 	heading.SetFont(font)
@@ -208,12 +212,12 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 30, 0)
-	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.Discussed1.Specialist, syllabus.Preface.Discussed1.FullName))
+	chunk = p.Append(fmt.Sprintf("Заведующий кафедрой ___________ %s", syllabus.Preface.Discussed1.FullName))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter.Add(p)
 
-	subChapter2 := chapter2.NewSubchapter(syllabus.Preface.Discussion2)
+	subChapter2 := chapter2.NewSubchapter(`На заседании комиссии по обеспечению качества Технологического факультета от ` + syllabus.Preface.Discussion2)
 	heading = subChapter2.GetHeading()
 	heading.SetFontSize(12)
 	heading.SetFont(font)
@@ -221,7 +225,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 30, 0)
-	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.Discussed2.Specialist, syllabus.Preface.Discussed2.FullName))
+	chunk = p.Append(fmt.Sprintf("Председатель ТФ  ___________ %s", syllabus.Preface.Discussed2.FullName))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter2.Add(p)
@@ -235,7 +239,7 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 15)
-	chunk = p.Append(fmt.Sprintf("%s ___________ %s", syllabus.Preface.ConfirmedBy.Specialist, syllabus.Preface.ConfirmedBy.FullName))
+	chunk = p.Append(fmt.Sprintf("Декан факультета ТФ ___________ %s", syllabus.Preface.ConfirmedBy.FullName))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	chapter3.Add(p)
@@ -245,17 +249,138 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.
 
 	c.Draw(chapter1)
 }
+func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
+	c.NewPage()
+
+	chapter2 := c.NewChapter("ОБЩИЕ ПОЛОЖЕНИЯ")
+	chapter2.SetShowNumbering(false)
+	heading := chapter2.GetHeading()
+	heading.SetColor(creator.ColorBlack)
+	heading.SetFontSize(14)
+	heading.SetFont(fontBold)
+
+	subChapter := chapter2.NewSubchapter(`Общие сведения о преподавателе и дисциплине`)
+	heading = subChapter.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p := c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk := p.Append(fmt.Sprintf(`Ф.И.О преподавателя: %s
+	Ученая степень, звание, должность:  %s
+	Факультет  %s
+	Контактная информация: тел. %s, %s
+	Сроки и время для консультации обучающихся: %s `, syllabus.Preface.MadeBy.FullName, syllabus.Preface.MadeBy.Specialist, syllabus.Preface.MadeBy.Faculty,
+		syllabus.Preface.MadeBy.Email, syllabus.Preface.MadeBy.Address, syllabus.Preface.MadeBy.TimeForConsultation))
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter.Add(p)
+
+	subChapter2 := chapter2.NewSubchapter(`Краткое описание содержания дисциплины`)
+	heading = subChapter2.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`Дисциплина формирует навыки по разработке и использованию интеллектуальных систем в образовании, учебно-методических материалов, инструкций по внедрению средств и технологий информатизации и интеллектуализации в систему вузовского образования, а также автоматизированной образовательной системы вуза. `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter2.Add(p)
+
+	subChapter3 := chapter2.NewSubchapter(`Цель преподавания дисциплины`)
+	heading = subChapter3.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`Цель преподавания дисциплины изучить современные инновационные направления в науке, позволяющие разрабатывать и использовать наукоемкие, интеллектуальные системы в образовании. `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter3.Add(p)
+
+	subChapter4 := chapter2.NewSubchapter(`Задача дисциплины`)
+	heading = subChapter4.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`Задачей дисциплины является приобретение и применение магистрантами теоретических знаний и практических знаний последних достижений информационно-коммуникационных технологий  в образовательном процессе в том числе и индустрии 4.`)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter4.Add(p)
+
+	subChapter5 := chapter2.NewSubchapter(`Ожидаемые результаты обучения и формируемые компетенции.`)
+	heading = subChapter5.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`При завершении освоения дисциплины обучающийся: - знает  современных инновационных направлениях в науке, позволяющие разрабатывать и использовать наукоемкие, интеллектуальные системы в образовании; - умеет применять учебно-методические, материалы, инструкции по внедрению средств и технологии информатизации и интеллектуализации в систему вузовского образования; - имеет навыки внедрения средств и технологии информатизации и интеллектуализации образования; - обладает следующими  компетенциями:  разработка и использование наукоемких, интеллектуальных систем в образовании. `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter5.Add(p)
+
+	subChapter6 := chapter2.NewSubchapter(`Пререквизиты курса:`)
+	heading = subChapter6.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`Информатика. Информационные технологии  в образовании  `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter6.Add(p)
+
+	subChapter7 := chapter2.NewSubchapter(`Постреквизиты курса:`)
+	heading = subChapter7.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`Использование полученных знаний при выполнении  дисертационной работы, в  дальнейшей профессиональной деятельности.  При участии в грантовых и научных проектах. `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter7.Add(p)
+
+	subChapter8 := chapter2.NewSubchapter(`Формат обучения`)
+	heading = subChapter8.GetHeading()
+	heading.SetFontSize(12)
+	heading.SetFont(fontBold)
+	heading.SetMargins(0, 0, 15, 0)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 15, 0)
+	chunk = p.Append(`Оф –лайн.`)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter8.Add(p)
+
+	c.Draw(chapter2)
+}
 
 func Topic(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	c.NewPage()
 
-	headTable(c, font, fontBold, 3)
+	headTable(c, font, fontBold, 4)
 
 	p := c.NewParagraph("РАБОЧАЯ УЧЕБНАЯ ПРОГРАММА ДИСЦИПЛИНЫ\n\n(СИЛЛАБУС)")
 	p.SetFontSize(14)
 	p.SetFont(fontBold)
 	p.SetTextAlignment(creator.TextAlignmentCenter)
-	p.SetMargins(0, 0, 0, 20)
+	p.SetMargins(0, 0, 20, 20)
 
 	c.Draw(p)
 
@@ -449,9 +574,93 @@ func Topic(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Sy
 	cell.SetBorder(creator.CellBorderSideAll, creator.CellBorderStyleSingle, 1)
 	cell.SetVerticalAlignment(creator.CellVerticalAlignmentMiddle)
 
-	c.Draw(table)
-}
+	chapter := c.NewChapter("")
+	chapter.SetShowNumbering(false)
 
+	subChapter := chapter.NewSubchapter("Задания  1 - 2 рубежного контролей знаний. ")
+	heading := subChapter.GetHeading()
+	heading.SetFontSize(13)
+	heading.SetMargins(0, 0, 10, 10)
+	heading.SetFont(fontBold)
+
+	pa := c.NewStyledParagraph()
+	pa.SetMargins(0, 0, 10, 0)
+	chunk := pa.Append(`Рубежный контроль представляет собой промежуточную форму оценки усвоения теоретических знаний и практических умений. Рубежный контроль имеет целью установить качество усвоения учебного материала по 5 модулям тем дисциплины. Методические укзания по выполнению практических занятий размещены  в файловых ресурсах на  Платонус) 
+	Рубежный контроль проводится в письменной форме по теоретическим вопросам и отчетам  по практическим занятиям.`)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	subChapter.Add(pa)
+
+	pa = c.NewStyledParagraph()
+	pa.SetMargins(0, 0, 30, 0)
+	pa.SetTextAlignment(creator.TextAlignmentCenter)
+	chunk = pa.Append(`Вопросы к рубежному контролю №1 `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = fontBold
+	subChapter.Add(pa)
+	for key, question := range syllabus.Question1.Questions {
+		pa = c.NewStyledParagraph()
+		pa.SetMargins(0, 0, 10, 0)
+		chunk = pa.Append(strconv.Itoa(key+1) + `. ` + question)
+		chunk.Style.FontSize = 12
+		chunk.Style.Font = font
+		subChapter.Add(pa)
+	}
+
+	pa = c.NewStyledParagraph()
+	pa.SetMargins(0, 0, 30, 0)
+	pa.SetTextAlignment(creator.TextAlignmentCenter)
+	chunk = pa.Append(`Вопросы к рубежному контролю №2 `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = fontBold
+	subChapter.Add(pa)
+	for key, question := range syllabus.Question2.Questions {
+		pa = c.NewStyledParagraph()
+		pa.SetMargins(0, 0, 10, 0)
+		chunk = pa.Append(strconv.Itoa(key+1) + `. ` + question)
+		chunk.Style.FontSize = 12
+		chunk.Style.Font = font
+		subChapter.Add(pa)
+	}
+
+	chapter3 := c.NewChapter("3. ПОЛИТИКА КУРСА")
+	chapter3.SetShowNumbering(false)
+	heading = chapter3.GetHeading()
+	heading.SetFontSize(13)
+	heading.SetMargins(0, 0, 20, 0)
+	heading.SetFont(fontBold)
+
+	pa = c.NewStyledParagraph()
+	pa.SetMargins(0, 0, 30, 0)
+	chunk = pa.Append(`	Посещение занятий строго обязательно. Если по какой-либо причине, студент не может посещать занятия, то он несет ответственность за весь неосвоенный материал.  
+
+	Контрольные задания обязательны для выполнения и должны сдаваться в установленные сроки. Работы, выполненные с опозданием, будут автоматически оцениваться ниже.
+
+	Итоги рубежной аттестации проставляются с учетом посещаемости, выполнение самостоятельных работ студента, в установленные сроки, ответов на занятиях в устной или письменной форме, результатов самого рубежного контроля. 
+
+	Если студент пропустил занятия и не смог сдать рубежный контроль в установленные сроки по болезни или другим уважительным причинам, документально подтвержденным, соответствующей организацией, он имеет право на индивидуальное прохождение рубежного контроля. В этом случае ему устанавливают индивидуальные сроки сдачи рубежного контроля согласно предоставленным документам. 
+
+	Любое списывание или плагиат (использование, копирование готовых заданий и решений других студентов) будет пресекаться в виде исключения из аудитории и/или наказания оценкой «неудовлетворительно».
+
+	Сотовые телефоны отключать во время проведения занятий.
+	
+			Обучающиеся обязаны: 
+- неукоснительно соблюдать Правила академической честности при выполнении 
+учебных заданий; 
+- использовать достоверные и надёжные  источники информации; 
+- качественно выполнять письменные работы, предусмотренные курсом, рефераты, 
+курсовые, эссе, отчеты по практическим-лабораторным занятиям, на основе 
+собственных идей при указании на авторство и идеи других людей; 
+- самостоятельно выполнять все виды оцениваемых работ; 
+- соблюдать Правила академической честности.  `)
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	chapter3.Add(pa)
+
+	c.Draw(table)
+	c.Draw(chapter)
+	c.Draw(chapter3)
+}
 func GradesTable(c *creator.Creator, font, fontBold *model.PdfFont) {
 
 	p := c.NewParagraph("4. Оценка знаний обучающихся определяется по шкале")
@@ -721,13 +930,15 @@ func GradesTable(c *creator.Creator, font, fontBold *model.PdfFont) {
 func Literature(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syllabus) {
 	c.NewPage()
 
-	chapter := c.NewChapter("ЛИТЕРАТУРА И ИНТЕРНЕТ-РЕСУРСЫ")
+	chapter := c.NewChapter("4. ЛИТЕРАТУРА И ИНТЕРНЕТ-РЕСУРСЫ")
+	chapter.SetShowNumbering(false)
 	heading := chapter.GetHeading()
 	heading.SetFontSize(14)
 	heading.SetMargins(0, 0, 30, 10)
 	heading.SetFont(fontBold)
 
-	subChapter := chapter.NewSubchapter("Основная литература")
+	subChapter := chapter.NewSubchapter("4.1. Основная литература")
+	subChapter.SetShowNumbering(false)
 	heading = subChapter.GetHeading()
 	heading.SetFontSize(13)
 	heading.SetMargins(0, 0, 10, 10)
@@ -741,7 +952,8 @@ func Literature(c *creator.Creator, font, fontBold *model.PdfFont, syllabus mode
 		subChapter.Add(p)
 	}
 
-	subChapter = chapter.NewSubchapter("Дополнительная литература.  ")
+	subChapter = chapter.NewSubchapter("4.2. Дополнительная литература.  ")
+	subChapter.SetShowNumbering(false)
 	heading = subChapter.GetHeading()
 	heading.SetFontSize(13)
 	heading.SetMargins(0, 0, 10, 10)
@@ -767,7 +979,7 @@ func headTable(c *creator.Creator, font, fontBold *model.PdfFont, pageNum int) {
 	p.SetMargins(0, 0, 15, 15)
 	p.SetFontSize(12)
 	p.SetTextAlignment(creator.TextAlignmentCenter)
-	cell.SetContent(addText(c, fontBold, ""))
+	cell.SetContent(p)
 	cell.SetBorder(creator.CellBorderSideAll, creator.CellBorderStyleSingle, 1)
 
 	cell = table.NewCell()

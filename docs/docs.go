@@ -467,6 +467,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/syllabus/question/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "syllabus",
+                        "name": "syllabus",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Syllabus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/syllabus/topic/{id}": {
             "put": {
                 "security": [
@@ -719,6 +769,18 @@ const docTemplate = `{
         "models.Confirmer": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "consultation": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "faculty": {
+                    "type": "string"
+                },
                 "fullName": {
                     "type": "string"
                 },
@@ -853,6 +915,17 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Question": {
+            "type": "object",
+            "properties": {
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "models.SuccessResponse": {
             "type": "object",
             "properties": {
@@ -873,6 +946,12 @@ const docTemplate = `{
                 },
                 "preface": {
                     "$ref": "#/definitions/models.PrefaceInfo"
+                },
+                "question1": {
+                    "$ref": "#/definitions/models.Question"
+                },
+                "question2": {
+                    "$ref": "#/definitions/models.Question"
                 },
                 "syllabusID": {
                     "type": "integer"
@@ -910,6 +989,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sro": {
+                    "type": "integer"
+                },
+                "srop": {
                     "type": "integer"
                 },
                 "subjectInfo": {

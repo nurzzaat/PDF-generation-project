@@ -2,6 +2,14 @@ basePath: /pdf
 definitions:
   models.Confirmer:
     properties:
+      address:
+        type: string
+      consultation:
+        type: string
+      email:
+        type: string
+      faculty:
+        type: string
       fullName:
         type: string
       specialist:
@@ -88,6 +96,13 @@ definitions:
       additionalProp3:
         type: string
     type: object
+  models.Question:
+    properties:
+      questions:
+        items:
+          type: string
+        type: array
+    type: object
   models.SuccessResponse:
     properties:
       metadata:
@@ -102,6 +117,10 @@ definitions:
         $ref: '#/definitions/models.SyllabusInfo'
       preface:
         $ref: '#/definitions/models.PrefaceInfo'
+      question1:
+        $ref: '#/definitions/models.Question'
+      question2:
+        $ref: '#/definitions/models.Question'
       syllabusID:
         type: integer
       topics:
@@ -126,6 +145,8 @@ definitions:
       practiceLessons:
         type: integer
       sro:
+        type: integer
+      srop:
         type: integer
       subjectInfo:
         $ref: '#/definitions/models.Header'
@@ -475,6 +496,37 @@ paths:
       tags:
       - Syllabus
   /syllabus/preface/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.Syllabus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/question/{id}:
     put:
       consumes:
       - application/json

@@ -2,6 +2,7 @@ package syllabus
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nurzzaat/PDF-generation-project/internal/models"
@@ -9,16 +10,15 @@ import (
 
 //	@Tags		Syllabus
 // @Security	ApiKeyAuth
-//	@Param		syllabus	body	models.SyllabusInfo	true	"syllabus"
+//	@Param		id			path	int				true	"id"
+//	@Param		syllabus	body	models.Syllabus	true	"syllabus"
 //	@Accept		json
 //	@Produce	json
 //	@Success	200		{object}	models.SuccessResponse
 //	@Failure	default	{object}	models.ErrorResponse
-//	@Router		/syllabus [post]
-func (sc *SyllabusController) Create(c *gin.Context) {
-	userID := c.GetUint("userID")
-
-	var syllabus models.SyllabusInfo
+//	@Router		/syllabus/question/{id} [put]
+func (sc *SyllabusController) UpdateQuestion(c *gin.Context) {
+	var syllabus models.Syllabus
 	if err := c.ShouldBind(&syllabus); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
@@ -30,14 +30,14 @@ func (sc *SyllabusController) Create(c *gin.Context) {
 		})
 		return
 	}
-
-	id, err := sc.SyllabusRepository.Create(c, syllabus, userID)
+	syllabus.SyllabusID, _ = strconv.Atoi(c.Param("id"))
+	err := sc.SyllabusRepository.UpdateQuestion(c, syllabus)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Result: []models.ErrorDetail{
 				{
-					Code:    "ERROR_CREATE_SYLLABUS",
-					Message: "Couldn't create syllabus",
+					Code:    "ERROR_UPDATE_SYLLABUS",
+					Message: "Couldn't update syllabus",
 					Metadata: models.Properties{
 						Properties1: err.Error(),
 					},
@@ -46,5 +46,5 @@ func (sc *SyllabusController) Create(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, models.SuccessResponse{Result: id})
+	c.JSON(200, models.SuccessResponse{Result: "Success"})
 }

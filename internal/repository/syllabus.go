@@ -18,11 +18,11 @@ func NewSyllabusRepository(db *pgxpool.Pool) models.SyllabusRepository {
 func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.SyllabusInfo, userID uint) (int, error) {
 	var id int
 	query := `INSERT INTO syllabus(
-		userid, subject, faculty, kafedra, specialist, coursenumber, creditnumber, allhours, lecturehour, practicehour, sro)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning id;`
+		userid, subject, faculty, kafedra, specialist, coursenumber, creditnumber, allhours, lecturehour, practicehour, sro , srop)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning id;`
 	err := sr.db.QueryRow(c, query, userID, syllabusInfo.SubjectInfo.SubjectName,
 		syllabusInfo.FacultyName, syllabusInfo.KafedraName, syllabusInfo.SubjectInfo.SpecialityName, syllabusInfo.CourseNumber,
-		syllabusInfo.CreditNumber, syllabusInfo.AllHours, syllabusInfo.LectureHours, syllabusInfo.PracticeLessons, syllabusInfo.SRO).Scan(&id)
+		syllabusInfo.CreditNumber, syllabusInfo.AllHours, syllabusInfo.LectureHours, syllabusInfo.PracticeLessons, syllabusInfo.SRO, syllabusInfo.SROP).Scan(&id)
 	if err != nil {
 		return id, err
 	}
@@ -32,11 +32,11 @@ func (sr *SyllabusRepository) Create(c context.Context, syllabusInfo models.Syll
 func (sr *SyllabusRepository) UpdateMain(c context.Context, syllabus models.Syllabus) error {
 	query := `UPDATE syllabus
 	SET subject=$1, faculty=$2, kafedra=$3, specialist=$4, coursenumber=$5, creditnumber=$6, allhours=$7, 
-	lecturehour=$8, practicehour=$9, sro=$10 WHERE id = $11`
+	lecturehour=$8, practicehour=$9, sro=$10 , srop=$11 WHERE id = $12`
 	_, err := sr.db.Exec(c, query, syllabus.MainInfo.SubjectInfo.SubjectName, syllabus.MainInfo.FacultyName,
 		syllabus.MainInfo.KafedraName, syllabus.MainInfo.SubjectInfo.SpecialityName, syllabus.MainInfo.CourseNumber,
 		syllabus.MainInfo.CreditNumber, syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours,
-		syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO, syllabus.SyllabusID)
+		syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO, syllabus.MainInfo.SROP, syllabus.SyllabusID)
 	if err != nil {
 		return err
 	}
@@ -46,11 +46,12 @@ func (sr *SyllabusRepository) UpdateMain(c context.Context, syllabus models.Syll
 func (sr *SyllabusRepository) UpdatePreface(c context.Context, syllabus models.Syllabus) error {
 	query := `UPDATE syllabus
 	SET madeby=$1, madebymajor=$2, discuss1=$3, discussby1=$4, discussby1major=$5, discuss2=$6, discussby2=$7, 
-	discussby2major=$8, confirmedby=$9, confirmedbymajor=$10 WHERE id = $11`
+	discussby2major=$8, confirmedby=$9, confirmedbymajor=$10 , facultyOfProf = $11 , email=$12 , address=$13 , timeofcons=$14 WHERE id = $15`
 	_, err := sr.db.Exec(c, query, syllabus.Preface.MadeBy.FullName, syllabus.Preface.MadeBy.Specialist,
 		syllabus.Preface.Discussion1, syllabus.Preface.Discussed1.FullName, syllabus.Preface.Discussed1.Specialist,
 		syllabus.Preface.Discussion2, syllabus.Preface.Discussed2.FullName, syllabus.Preface.Discussed2.Specialist,
-		syllabus.Preface.ConfirmedBy.FullName, syllabus.Preface.ConfirmedBy.Specialist, syllabus.SyllabusID)
+		syllabus.Preface.ConfirmedBy.FullName, syllabus.Preface.ConfirmedBy.Specialist, syllabus.Preface.MadeBy.Faculty  , 
+		syllabus.Preface.MadeBy.Email , syllabus.Preface.MadeBy.Address , syllabus.Preface.MadeBy.TimeForConsultation, syllabus.SyllabusID)
 	if err != nil {
 		return err
 	}
@@ -80,6 +81,36 @@ func (sr *SyllabusRepository) UpdateTopic(c context.Context, syllabus models.Syl
 			if err != nil {
 				return err
 			}
+		}
+	}
+
+	return nil
+}
+
+func (sr *SyllabusRepository) UpdateQuestion(c context.Context, syllabus models.Syllabus) error {
+	deleteQuery := `delete from questions where syllabusid = $1`
+	_, err := sr.db.Exec(c, deleteQuery, syllabus.SyllabusID)
+	if err != nil {
+		return err
+	}
+	for _, question := range syllabus.Question1.Questions {
+		var questionID int
+		questionQuery := `INSERT INTO questions(
+			syllabusid, title , sequen)
+			VALUES ($1, $2 , 1) returning id;`
+		err = sr.db.QueryRow(c, questionQuery, syllabus.SyllabusID, question).Scan(&questionID)
+		if err != nil {
+			return err
+		}
+	}
+	for _, question := range syllabus.Question2.Questions {
+		var questionID int
+		questionQuery := `INSERT INTO questions(
+			syllabusid, title , sequen)
+			VALUES ($1, $2 , 2) returning id;`
+		err = sr.db.QueryRow(c, questionQuery, syllabus.SyllabusID, question).Scan(&questionID)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -116,15 +147,15 @@ func (sr *SyllabusRepository) Update(c context.Context, syllabus models.Syllabus
 	query := `UPDATE syllabus
 	SET subject=$1, faculty=$2, kafedra=$3, specialist=$4, coursenumber=$5, creditnumber=$6, allhours=$7, 
 	lecturehour=$8, practicehour=$9, sro=$10, madeby=$11, madebymajor=$12, discuss1=$13, discussby1=$14, 
-	discussby1major=$15, discuss2=$16, discussby2=$17, discussby2major=$18, confirmedby=$19, confirmedbymajor=$20
-	WHERE id = $21`
+	discussby1major=$15, discuss2=$16, discussby2=$17, discussby2major=$18, confirmedby=$19, confirmedbymajor=$20 , srop=$21
+	WHERE id = $22`
 	_, err := sr.db.Exec(c, query, syllabus.MainInfo.SubjectInfo.SubjectName, syllabus.MainInfo.FacultyName,
 		syllabus.MainInfo.KafedraName, syllabus.MainInfo.SubjectInfo.SpecialityName, syllabus.MainInfo.CourseNumber,
 		syllabus.MainInfo.CreditNumber, syllabus.MainInfo.AllHours, syllabus.MainInfo.LectureHours,
 		syllabus.MainInfo.PracticeLessons, syllabus.MainInfo.SRO, syllabus.Preface.MadeBy.FullName, syllabus.Preface.MadeBy.Specialist,
 		syllabus.Preface.Discussion1, syllabus.Preface.Discussed1.FullName, syllabus.Preface.Discussed1.Specialist,
 		syllabus.Preface.Discussion2, syllabus.Preface.Discussed2.FullName, syllabus.Preface.Discussed2.Specialist,
-		syllabus.Preface.ConfirmedBy.FullName, syllabus.Preface.ConfirmedBy.Specialist, syllabus.SyllabusID)
+		syllabus.Preface.ConfirmedBy.FullName, syllabus.Preface.ConfirmedBy.Specialist, syllabus.MainInfo.SROP, syllabus.SyllabusID)
 	if err != nil {
 		return err
 	}
@@ -204,12 +235,14 @@ func (sr *SyllabusRepository) Delete(c context.Context, syllabusID int) error {
 func (sr *SyllabusRepository) GetByID(c context.Context, syllabusID int, userID uint) (models.Syllabus, error) {
 	syllabus := models.Syllabus{}
 	query := `SELECT id, subject, faculty, kafedra, specialist, coursenumber, creditnumber, allhours, lecturehour, practicehour, 
-	sro, madeby, madebymajor, discuss1, discussby1, discussby1major, discuss2, discussby2, discussby2major, confirmedby, confirmedbymajor
+	sro,srop , madeby, madebymajor,facultyOfProf , email , address , timeofcons, discuss1, discussby1, discussby1major, discuss2, discussby2, discussby2major, confirmedby, confirmedbymajor
 	FROM syllabus where id = $1;`
 	err := sr.db.QueryRow(c, query, syllabusID).Scan(&syllabus.SyllabusID, &syllabus.MainInfo.SubjectInfo.SubjectName,
 		&syllabus.MainInfo.FacultyName, &syllabus.MainInfo.KafedraName, &syllabus.MainInfo.SubjectInfo.SpecialityName,
 		&syllabus.MainInfo.CourseNumber, &syllabus.MainInfo.CreditNumber, &syllabus.MainInfo.AllHours, &syllabus.MainInfo.LectureHours,
-		&syllabus.MainInfo.PracticeLessons, &syllabus.MainInfo.SRO, &syllabus.Preface.MadeBy.FullName, &syllabus.Preface.MadeBy.Specialist,
+		&syllabus.MainInfo.PracticeLessons, &syllabus.MainInfo.SRO, &syllabus.MainInfo.SROP, 
+		&syllabus.Preface.MadeBy.FullName, &syllabus.Preface.MadeBy.Specialist, &syllabus.Preface.MadeBy.Faculty ,&syllabus.Preface.MadeBy.Email,
+		&syllabus.Preface.MadeBy.Address , &syllabus.Preface.MadeBy.TimeForConsultation,
 		&syllabus.Preface.Discussion1, &syllabus.Preface.Discussed1.FullName, &syllabus.Preface.Discussed1.Specialist,
 		&syllabus.Preface.Discussion2, &syllabus.Preface.Discussed2.FullName, &syllabus.Preface.Discussed2.Specialist,
 		&syllabus.Preface.ConfirmedBy.FullName, &syllabus.Preface.ConfirmedBy.Specialist)
@@ -266,6 +299,25 @@ func (sr *SyllabusRepository) GetByID(c context.Context, syllabusID int, userID 
 			syllabus.Literature.AdditionalLiterature = append(syllabus.Literature.AdditionalLiterature, literature)
 		}
 	}
+	//questions
+	questionQuery := `SELECT title , sequen FROM questions where syllabusid = $1;`
+	rows, err = sr.db.Query(c, questionQuery, syllabusID)
+	if err != nil {
+		return syllabus, err
+	}
+	for rows.Next() {
+		var question, tip string
+		err := rows.Scan(&question , &tip)
+		if err != nil {
+			return syllabus, err
+		}
+		if tip == "1" {
+			syllabus.Question1.Questions = append(syllabus.Question1.Questions,question )
+		} else {
+			syllabus.Question2.Questions = append(syllabus.Question2.Questions,question )
+		}
+	}
+
 	return syllabus, nil
 }
 

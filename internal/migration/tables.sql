@@ -60,3 +60,24 @@ create table literature(
 	title text default '',
 	foreign key(syllabusid) references syllabus(id)
 );
+
+alter table syllabus 
+add column srop text default '';
+
+create table questions(
+	id serial primary key,
+	syllabusid int,
+	title text default '',
+	foreign key (syllabusid) references syllabus(id) on delete cascade
+);
+
+	alter table syllabus
+	add column facultyOfProf text default '';
+	alter table syllabus
+	add column email text default '';
+	alter table syllabus
+	add column address text default '';
+	alter table syllabus
+	add column timeofcons text default '';
+	alter table questions
+add column sequen text default '';
