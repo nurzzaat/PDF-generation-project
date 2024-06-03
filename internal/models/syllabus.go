@@ -7,6 +7,7 @@ type Syllabus struct {
 	MainInfo   SyllabusInfo `json:"mainInfo"`
 	Preface    PrefaceInfo  `json:"preface"`
 	Topics     []Modules    `json:"topics"`
+	Text       Text         `json:"text"`
 	Literature Litrature    `json:"literature"`
 	Question1  Question     `json:"question1"`
 	Question2  Question     `json:"question2"`
@@ -21,8 +22,8 @@ type SyllabusInfo struct {
 	AllHours        int    `json:"allHours"`
 	LectureHours    int    `json:"lectureHours"`
 	PracticeLessons int    `json:"practiceLessons"`
-	SRO             int    `json:"sro"`
-	SROP            int    `json:"srop"`
+	SRO             string `json:"sro"`
+	SROP            string `json:"srop"`
 }
 
 type PrefaceInfo struct {
@@ -45,6 +46,16 @@ type Topic struct {
 	SPZ        int    `json:"SPZ"`
 	SRO        int    `json:"SRO"`
 	Literature string `json:"literature"`
+}
+
+type Text struct {
+	Text2 string `json:"text2"`
+	Text3 string `json:"text3"`
+	Text4 string `json:"text4"`
+	Text5 string `json:"text5"`
+	Text6 string `json:"text6"`
+	Text7 string `json:"text7"`
+	Text8 string `json:"text8"`
 }
 
 type SyllabusMaker struct {
@@ -81,6 +92,7 @@ type SyllabusRepository interface {
 	UpdateMain(c context.Context, syllabus Syllabus) error
 	UpdatePreface(c context.Context, syllabus Syllabus) error
 	UpdateTopic(c context.Context, syllabus Syllabus) error
+	UpdateText(c context.Context, syllabus Syllabus) error
 	UpdateLiterature(c context.Context, syllabus Syllabus) error
 	UpdateQuestion(c context.Context, syllabus Syllabus) error
 	Delete(c context.Context, syllabusID int) error

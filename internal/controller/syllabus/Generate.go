@@ -285,7 +285,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`Дисциплина формирует навыки по разработке и использованию интеллектуальных систем в образовании, учебно-методических материалов, инструкций по внедрению средств и технологий информатизации и интеллектуализации в систему вузовского образования, а также автоматизированной образовательной системы вуза. `)
+	chunk = p.Append(syllabus.Text.Text2)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter2.Add(p)
@@ -298,7 +298,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`Цель преподавания дисциплины изучить современные инновационные направления в науке, позволяющие разрабатывать и использовать наукоемкие, интеллектуальные системы в образовании. `)
+	chunk = p.Append(syllabus.Text.Text3)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter3.Add(p)
@@ -311,7 +311,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`Задачей дисциплины является приобретение и применение магистрантами теоретических знаний и практических знаний последних достижений информационно-коммуникационных технологий  в образовательном процессе в том числе и индустрии 4.`)
+	chunk = p.Append(syllabus.Text.Text4)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter4.Add(p)
@@ -324,7 +324,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`При завершении освоения дисциплины обучающийся: - знает  современных инновационных направлениях в науке, позволяющие разрабатывать и использовать наукоемкие, интеллектуальные системы в образовании; - умеет применять учебно-методические, материалы, инструкции по внедрению средств и технологии информатизации и интеллектуализации в систему вузовского образования; - имеет навыки внедрения средств и технологии информатизации и интеллектуализации образования; - обладает следующими  компетенциями:  разработка и использование наукоемких, интеллектуальных систем в образовании. `)
+	chunk = p.Append(syllabus.Text.Text5)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter5.Add(p)
@@ -337,7 +337,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`Информатика. Информационные технологии  в образовании  `)
+	chunk = p.Append(syllabus.Text.Text6)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter6.Add(p)
@@ -350,7 +350,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`Использование полученных знаний при выполнении  дисертационной работы, в  дальнейшей профессиональной деятельности.  При участии в грантовых и научных проектах. `)
+	chunk = p.Append(syllabus.Text.Text7)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter7.Add(p)
@@ -363,7 +363,7 @@ func Text(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.Syl
 
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 0)
-	chunk = p.Append(`Оф –лайн.`)
+	chunk = p.Append(syllabus.Text.Text8)
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	subChapter8.Add(p)

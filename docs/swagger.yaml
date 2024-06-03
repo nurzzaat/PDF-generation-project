@@ -123,6 +123,8 @@ definitions:
         $ref: '#/definitions/models.Question'
       syllabusID:
         type: integer
+      text:
+        $ref: '#/definitions/models.Text'
       topics:
         items:
           $ref: '#/definitions/models.Modules'
@@ -145,11 +147,28 @@ definitions:
       practiceLessons:
         type: integer
       sro:
-        type: integer
+        type: string
       srop:
-        type: integer
+        type: string
       subjectInfo:
         $ref: '#/definitions/models.Header'
+    type: object
+  models.Text:
+    properties:
+      text2:
+        type: string
+      text3:
+        type: string
+      text4:
+        type: string
+      text5:
+        type: string
+      text6:
+        type: string
+      text7:
+        type: string
+      text8:
+        type: string
     type: object
   models.Topic:
     properties:
@@ -527,6 +546,37 @@ paths:
       tags:
       - Syllabus
   /syllabus/question/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: syllabus
+        in: body
+        name: syllabus
+        required: true
+        schema:
+          $ref: '#/definitions/models.Syllabus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - Syllabus
+  /syllabus/text/{id}:
     put:
       consumes:
       - application/json

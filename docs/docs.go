@@ -517,6 +517,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/syllabus/text/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Syllabus"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "syllabus",
+                        "name": "syllabus",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Syllabus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/syllabus/topic/{id}": {
             "put": {
                 "security": [
@@ -956,6 +1006,9 @@ const docTemplate = `{
                 "syllabusID": {
                     "type": "integer"
                 },
+                "text": {
+                    "$ref": "#/definitions/models.Text"
+                },
                 "topics": {
                     "type": "array",
                     "items": {
@@ -989,13 +1042,39 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sro": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "srop": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "subjectInfo": {
                     "$ref": "#/definitions/models.Header"
+                }
+            }
+        },
+        "models.Text": {
+            "type": "object",
+            "properties": {
+                "text2": {
+                    "type": "string"
+                },
+                "text3": {
+                    "type": "string"
+                },
+                "text4": {
+                    "type": "string"
+                },
+                "text5": {
+                    "type": "string"
+                },
+                "text6": {
+                    "type": "string"
+                },
+                "text7": {
+                    "type": "string"
+                },
+                "text8": {
+                    "type": "string"
                 }
             }
         },

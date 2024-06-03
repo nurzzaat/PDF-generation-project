@@ -59,6 +59,7 @@ func Setup(app pkg.Application, router *gin.Engine) {
 		syllabusRouter.PUT("/main/:id", syllabusController.UpdateMain)
 		syllabusRouter.PUT("/preface/:id", syllabusController.UpdatePreface)
 		syllabusRouter.PUT("/topic/:id", syllabusController.UpdateTopic)
+		syllabusRouter.PUT("/text/:id", syllabusController.UpdateText)
 		syllabusRouter.PUT("/literature/:id", syllabusController.UpdateLiterature)
 		syllabusRouter.PUT("/question/:id", syllabusController.UpdateQuestion)
 		syllabusRouter.DELETE("/:id", syllabusController.Delete)

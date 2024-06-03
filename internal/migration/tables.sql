@@ -81,3 +81,22 @@ create table questions(
 	add column timeofcons text default '';
 	alter table questions
 add column sequen text default '';
+
+
+create table addition(
+	syllabusid int ,
+	text2 text default '',
+	text3 text default '',
+	text4 text default '',
+	text5 text default '',
+	text6 text default '',
+	text7 text default '',
+	text8 text default '',
+	foreign key(syllabusid) references syllabus(id)
+);
+
+alter table syllabus
+alter column sro set data type text;
+
+alter table syllabus
+alter column srop set data type text
