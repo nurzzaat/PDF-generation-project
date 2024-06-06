@@ -884,6 +884,12 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "internetSource": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "mainLiterature": {
                     "type": "array",
                     "items": {
@@ -944,6 +950,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discussion2": {
+                    "type": "string"
+                },
+                "insertedIn": {
                     "type": "string"
                 },
                 "madeBy": {

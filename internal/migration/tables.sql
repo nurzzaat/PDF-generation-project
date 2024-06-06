@@ -99,4 +99,8 @@ alter table syllabus
 alter column sro set data type text;
 
 alter table syllabus
-alter column srop set data type text
+alter column srop set data type text;
+
+alter table syllabus
+add column insertedin text default '';
+

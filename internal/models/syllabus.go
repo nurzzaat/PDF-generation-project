@@ -33,6 +33,7 @@ type PrefaceInfo struct {
 	Discussion2 string    `json:"discussion2"`
 	Discussed2  Confirmer `json:"discussedBy2"`
 	ConfirmedBy Confirmer `json:"confirmedBy"`
+	InsertedIn  string    `json:"insertedIn"`
 }
 
 type Modules struct {
@@ -72,6 +73,7 @@ type Question struct {
 type Litrature struct {
 	MainLiterature       []string `json:"mainLiterature"`
 	AdditionalLiterature []string `json:"additionalLiterature"`
+	InternetSource       []string `json:"internetSource"`
 }
 
 type Header struct {

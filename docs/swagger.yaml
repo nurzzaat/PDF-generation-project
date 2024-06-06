@@ -44,6 +44,10 @@ definitions:
         items:
           type: string
         type: array
+      internetSource:
+        items:
+          type: string
+        type: array
       mainLiterature:
         items:
           type: string
@@ -83,6 +87,8 @@ definitions:
       discussion1:
         type: string
       discussion2:
+        type: string
+      insertedIn:
         type: string
       madeBy:
         $ref: '#/definitions/models.Confirmer'

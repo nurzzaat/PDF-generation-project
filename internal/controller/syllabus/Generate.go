@@ -26,7 +26,7 @@ var (
 )
 
 func init() {
-	err := license.SetMeteredKey(`90308c219a04bac91fbc3ef50f27c988fbc8f4438cd10214e02cfb132113da0e`)
+	err := license.SetMeteredKey(`7b2efda3d63aa03496ca98c1a1b0c59d6057705f108ed25ee3865dc2fe08d9e1`)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -66,10 +66,10 @@ func (sc *SyllabusController) Generate(context *gin.Context) {
 
 	log.Println(syllabus)
 
-	// font, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/timesnrcyrmt.ttf")
-	// fontBold, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/TNR_Bold.ttf")
-	font, _ := model.NewCompositePdfFontFromTTFFile("timesnrcyrmt.ttf")
-	fontBold, _ := model.NewCompositePdfFontFromTTFFile("TNR_Bold.ttf")
+	font, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/timesnrcyrmt.ttf")
+	fontBold, _ := model.NewCompositePdfFontFromTTFFile("/home/ubuntu/PDF-generation-project/TNR_Bold.ttf")
+	// font, _ := model.NewCompositePdfFontFromTTFFile("timesnrcyrmt.ttf")
+	// fontBold, _ := model.NewCompositePdfFontFromTTFFile("TNR_Bold.ttf")
 
 	c := creator.New()
 	c.SetPageMargins(50, 50, 50, 50)
@@ -240,6 +240,14 @@ func Preface(c *creator.Creator, font, fontBold *model.PdfFont, syllabus models.
 	p = c.NewStyledParagraph()
 	p.SetMargins(0, 0, 15, 15)
 	chunk = p.Append(fmt.Sprintf("Декан факультета ТФ ___________ %s", syllabus.Preface.ConfirmedBy.FullName))
+	chunk.Style.FontSize = 12
+	chunk.Style.Font = font
+	chapter3.Add(p)
+
+	p = c.NewStyledParagraph()
+	p.SetMargins(0, 0, 30, 15)
+	p.SetTextAlignment(creator.TextAlignmentCenter)
+	chunk = p.Append(fmt.Sprintf("ВВЕДЕНО ВПЕРВЫЕ (Взамен ред. %s)", syllabus.Preface.InsertedIn))
 	chunk.Style.FontSize = 12
 	chunk.Style.Font = font
 	chapter3.Add(p)
@@ -961,6 +969,21 @@ func Literature(c *creator.Creator, font, fontBold *model.PdfFont, syllabus mode
 
 	for key, literature := range syllabus.Literature.AdditionalLiterature {
 		p := c.NewParagraph(fmt.Sprintf("4.2.%d. %s", key+1, literature))
+		p.SetFont(font)
+		p.SetFontSize(12)
+		p.SetMargins(0, 0, 0, 7)
+		subChapter.Add(p)
+	}
+
+	subChapter = chapter.NewSubchapter("4.3. Дополнительная литература.  ")
+	subChapter.SetShowNumbering(false)
+	heading = subChapter.GetHeading()
+	heading.SetFontSize(13)
+	heading.SetMargins(0, 0, 10, 10)
+	heading.SetFont(fontBold)
+
+	for key, literature := range syllabus.Literature.InternetSource {
+		p := c.NewParagraph(fmt.Sprintf("4.3.%d. %s", key+1, literature))
 		p.SetFont(font)
 		p.SetFontSize(12)
 		p.SetMargins(0, 0, 0, 7)
